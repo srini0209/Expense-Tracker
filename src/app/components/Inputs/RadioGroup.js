@@ -1,11 +1,11 @@
 'use client'
 import * as React from 'react';
-import {Box, FormLabel,Radio, RadioGroup, Sheet } from '@mui/joy';
+import { Box, FormLabel, Radio, RadioGroup, Sheet } from '@mui/joy';
 import { deepOrange, green } from '@mui/material/colors';
 
-export default function IconlessRadioGroup({ title, values }) {
+export default function IconlessRadioGroup({ title, values, value, onChange }) {
     return (
-        <Box sx={{ width: 500,marginBottom:3 }}>
+        <Box sx={{ width: 500, marginBottom: 3 }}>
             <FormLabel
                 id="radio-group-label"
                 sx={{
@@ -23,6 +23,8 @@ export default function IconlessRadioGroup({ title, values }) {
                 defaultValue="Expense"
                 size="xl"
                 orientation='horizontal'
+                value={value}
+                onChange={onChange}
                 sx={{ gap: 1.5, width: 500 }}
             >
                 {values.map((value) => (

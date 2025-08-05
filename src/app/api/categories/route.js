@@ -1,7 +1,7 @@
 import connectDB from "../../../../utils/dbConnect.js";
-import TransactionsModel from "../../../../models/TransactionsModel.js";
-import { NextResponse } from "next/server.js";
+import CategoriesModel from "../../../../models/CategoriesModel.js";
 import jwt from 'jsonwebtoken';
+import { NextResponse } from "next/server.js";
 
 export async function GET(request) {
     const authHeader = request.headers.get("authorization");
@@ -13,24 +13,18 @@ export async function GET(request) {
     const token = authHeader.split(' ')[1]
     console.log("token", token);
 
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.id;
-
     try {
         await connectDB();
-        const txns = await TransactionsModel.find({ userId: userId });
-        if (txns) {
-            return NextResponse.json(txns);
+        const categories = await CategoriesModel.find({});
+        if (categories) {
+            return NextResponse.json(categories);
         }
     } catch (error) {
         return NextResponse.json({ message: error.message });
     }
-
 }
 
 export async function POST(request) {
-
     const authHeader = request.headers.get("authorization");
     console.log("auth Header", authHeader);
 
@@ -47,24 +41,15 @@ export async function POST(request) {
     try {
         await connectDB();
         const body = await request.json();
-        const {
-            txnType,
-            amount,
-            category,
-            description,
-            date } = body;
-            
-        const txn = await TransactionsModel.create({
-            userId: userId,
-            txnType: txnType,
-            amount: amount,
-            category: category,
-            description: description,
-            date: date,
-        })
+        const { type, name } = body;
 
-        return NextResponse.json({ message: "Transaction Created Successfully", txn }, { status: 201 })
+        const category = await CategoriesModel.create({
+            userId: userId,
+            type: type,
+            name: name,
+        });
+        return NextResponse.json({ message: "Category Created Successfully", category }, { status: 201 });
     } catch (error) {
-        return Response.json({ message: "Server Error", error: error.message });
+        return NextResponse.json({ message: "Server Error", error: error.message }, { status: 500 });
     }
 }

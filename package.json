@@ -18,11 +18,13 @@
     "bcryptjs": "^3.0.2",
     "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
     "mongoose": "^8.17.0",
     "multer": "^2.0.2",
     "next": "15.4.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {

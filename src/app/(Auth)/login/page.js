@@ -7,6 +7,7 @@ import { validateEmail } from '../../../../utils/helper';
 import Input from '../../components/Inputs/Input.js';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import axiosInstance from '../../../../utils/axiosInstance';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -31,7 +32,7 @@ const Login = () => {
 
         // Login API call
         try {
-            const response = await axios.post("/api/auth/login", { email: email, password: password });
+            const response = await axiosInstance.post("/api/auth/login", { email: email, password: password });
             console.log(response);
             
             const { token } = response.data;

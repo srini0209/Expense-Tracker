@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const transcationSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -11,10 +11,9 @@ const transcationSchema = new mongoose.Schema({
     category: { type: String, required: true },
     description: { type: String },
     date: { type: Date },
-    createdAt: { type: Date, default: Date.now() },
-    updatedAt: { type: Date }
-});
 
-const TransactionsModel = mongoose.models.Transaction || mongoose.model('Transaction', transcationSchema);
+}, { timestamps: true });
+
+const TransactionsModel = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
 
 export default TransactionsModel;

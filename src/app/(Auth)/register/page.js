@@ -7,6 +7,7 @@ import { validateEmail } from '../../../../utils/helper.js';
 import axios from 'axios';
 import { TextField } from '@mui/material';
 import Input from '../../components/Inputs/Input.js';
+import axiosInstance from '../../../../utils/axiosInstance.js';
 
 const page = () => {
 
@@ -48,7 +49,7 @@ const page = () => {
         // API calls to Register
 
         try {
-            const response = await axios.post('/api/auth/register', {
+            const response = await axiosInstance.post('/api/auth/register', {
                 name: name,
                 email: email,
                 password: password

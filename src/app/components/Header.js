@@ -1,8 +1,11 @@
+'use client'
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 const Header = () => {
+    const path = usePathname();
     return (
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7e6f4] bg-[#f8f8fc] px-10 py-3">
             <div className="flex items-center gap-4 text-[#0d0c1d]">
@@ -11,27 +14,46 @@ const Header = () => {
                 </div>
                 <h2 className="text-[#0d0c1d] text-lg font-bold leading-tight tracking-[-0.015em]">FinTrack</h2>
             </div>
-            <div className="flex flex-1 justify-end gap-8">
-                <div className="flex items-center gap-9">
-                    <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Features</Link>
-                    <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Pricing</Link>
-                    <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Support</Link>
-                </div>
-                <div className="flex gap-2">
-                    <button
-                        className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#3c32ff] text-[#f8f8fc] text-sm font-bold leading-normal tracking-[0.015em]"
-                    >
-                        <Link className="truncate" href='/register'>Sign Up</Link>
-                    </button>
-                    <button
-                        className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7e6f4] text-[#0d0c1d] text-sm font-bold leading-normal tracking-[0.015em]"
-                    >
-                        <Link className="truncate" href='/login'>Log In</Link>
-                    </button>
-                </div>
-            </div>
+            {
+                path.includes['/', '/login', '/register'] && (
+                    <div className="flex flex-1 justify-end gap-8">
+                        <div className="flex items-center gap-9">
+                            <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Features</Link>
+                            <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Pricing</Link>
+                            <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Support</Link>
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#3c32ff] text-[#f8f8fc] text-sm font-bold leading-normal tracking-[0.015em]"
+                            >
+                                <Link className="truncate" href='/register'>Sign Up</Link>
+                            </button>
+                            <button
+                                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#e7e6f4] text-[#0d0c1d] text-sm font-bold leading-normal tracking-[0.015em]"
+                            >
+                                <Link className="truncate" href='/login'>Log In</Link>
+                            </button>
+                        </div>
+                    </div>
+                )
+            }
+            <Navbar />
         </header>
     )
 }
 
-export default Header
+export default React.memo(Header);
+
+const Navbar = () => {
+    return (
+        <div className="flex flex-1 justify-end gap-8">
+            <div className="flex items-center gap-9">
+                <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href='/dashboard'>Dashboard</Link>
+                <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="/transactions">Transactions</Link>
+                <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#">Budgets</Link>
+                <Link className="text-[#0d0c1d] text-sm font-medium leading-normal" href="#"><Image src={'/globe.svg'} width={50} height={50} alt='Profile Picture' /></Link>
+            </div>
+
+        </div>
+    )
+}
