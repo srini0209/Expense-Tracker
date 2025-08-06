@@ -25,7 +25,7 @@ const page = () => {
         }
     }
     useEffect(() => {
-        console.log("Transactions Page mounted ");
+        // console.log("Transactions Page mounted ");
 
         fetchTransactions();
 
