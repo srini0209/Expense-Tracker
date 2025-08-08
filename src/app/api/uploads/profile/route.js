@@ -1,51 +1,36 @@
-import multer from "multer";
-import nextConnect from "next-connect";
+import { writeFile, mkdir } from "fs/promises";
 import { NextResponse } from "next/server";
-export async function POST(request, response) {
-  // Configuring multer for file upload
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "/public/uploads/profile"); // Folder where files will be stored
-    },
-    filename: (req, file, cb) => {
-      cb(null, Date.now() + "-ProfileImage-" + file.originalname); // Adding timestamp prefix to prevent FileName conflict
-    },
-  });
+import { join } from "path";
 
-  // File filter to restrict to only image files (jpg, jpeg, png, gif)
-  const fileFilter = (req, file, cb) => {
-    const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+export async function POST(request) {
+  const data = await request.formData();
+  const file = data.get('file');
+  console.log('file:', file);
 
-    // If the file's mime type is not in the allowed types, return an error
-    if (!allowedMimeTypes.includes(file.mimetype)) {
-      return cb(
-        new Error("Invalid file type. Only images are allowed."),
-        false
-      );
+  try {
+
+    if (!file) {
+      return NextResponse.json({ message: "No file found" });
     }
 
-    // Otherwise, accept the file
-    cb(null, true);
-  };
+    const bytes = await file.arrayBuffer();
+    console.log('bytes:', bytes);
+    const buffer = Buffer.from(bytes);
+    console.log('buffer:', buffer);
 
-  const upload = multer({
-    storage,
-    fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 }, // Limits the file size to 5MB
-  });
+    const uploadDir = join(process.cwd(), 'public', 'uploads', 'profileImages');
+    await mkdir(uploadDir, { recursive: true });
 
-  // Initialize nextConnect to handle middleware and routes
-  const handler = nextConnect();
+    const fileName = Date.now() + "-ProfileImage-" + file.name;
+    const filePath = join(uploadDir, fileName);
+    console.log('filePath:', filePath);
 
-  //use multer to handle single file upload
-  handler.use(upload.single("file")); // 'file' is the name of the form field
+    await writeFile(filePath, buffer);
 
-  if (!request.file) {
-    return NextResponse.json({ error: "No File Uploaded" }, { status: 400 });
+    return NextResponse.json({ message: "File Upload success", imageUrl: `/public/uploads/profileImages/${fileName}` }, { status: 200 })
+
+  } catch (error) {
+    return NextResponse.json({ message: "error on uploading image - /upload/profile/route.js", error: error.message }, { status: 500 })
   }
 
-  return NextResponse.json(
-    { message: "File Uploaded Successfully", file: request.file },
-    { status: 200 }
-  );
 }
