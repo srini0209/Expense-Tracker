@@ -7,7 +7,7 @@ import { validateEmail } from '../../../../utils/helper';
 import Input from '../../components/Inputs/Input.js';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import axiosInstance from '../../../../utils/axiosInstance';
+import axiosInstance from '../../axiosInstance.js';
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -33,14 +33,15 @@ const Login = () => {
         // Login API call
         try {
             const response = await axiosInstance.post("/api/auth/login", { email: email, password: password });
-            console.log(response);
+            console.log("Login/Page.js  /api/login response:",response);
             
             const { token } = response.data;
-            console.log("token", token);
+            console.log("Login/Page.js  /api/login response-token", token);
             
             if (token) {
                 localStorage.setItem("token", token);
             }
+            console.log('Login/Page.js LocalStorage Token:',localStorage.getItem(token))
 
             router.push("/dashboard");
         } catch (error) {

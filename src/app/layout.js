@@ -2,7 +2,8 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
-
+import { UserProvider, UserContext } from "./Context/UserContext.js";
+import { Toaster } from "react-hot-toast";
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
 //   subsets: ["latin"],
@@ -12,7 +13,11 @@ import Footer from "./components/Footer.js";
 //   variable: "--font-geist-mono",
 //   subsets: ["latin"],
 // });
-const inter = Inter({ subsets: ['latin'], display: 'swap', variable:"--font-inter-mono" });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter-mono",
+});
 
 export const metadata = {
   title: "Expense Tracker",
@@ -22,13 +27,25 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} antialiased`}
-      ><div className="relative flex size-full min-h-screen flex-col bg-[#f8f8fc] group/design-root overflow-x-hidden" style={{ fontFamily: "Inter, Noto Sans, sans-serif" }}>
+      <body className={`${inter.variable} antialiased`}>
+        <div
+          className="relative flex size-full min-h-screen flex-col bg-[#f8f8fc] group/design-root overflow-x-hidden"
+          style={{ fontFamily: "Inter, Noto Sans, sans-serif" }}
+        >
           <div className="layout-container flex h-full grow flex-col">
-            <Header />
-            {children}
-            <Footer />
+            <UserProvider>
+              <Header />
+              {children}
+              <Footer />
+              <Toaster
+                toastOptions={{
+                  className: "",
+                  style: {
+                    fontSize: "13px",
+                  },
+                }}
+              />
+            </UserProvider>
           </div>
         </div>
       </body>

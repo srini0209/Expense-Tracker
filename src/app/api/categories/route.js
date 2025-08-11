@@ -1,55 +1,68 @@
 import connectDB from "../../../../utils/dbConnect.js";
 import CategoriesModel from "../../../../models/CategoriesModel.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server.js";
 
 export async function GET(request) {
-    const authHeader = request.headers.get("authorization");
-    console.log("auth Header", authHeader);
+  const authHeader = request.headers.get("authorization");
+  console.log("auth Header", authHeader);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return NextResponse.json({ message: "Not Authorized, No Token" }, { status: 401 })
-    }
-    const token = authHeader.split(' ')[1]
-    console.log("token", token);
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json(
+      { message: "Not Authorized, No Token" },
+      { status: 401 }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  console.log("token", token);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decoded.id;
 
-    try {
-        await connectDB();
-        const categories = await CategoriesModel.find({});
-        if (categories) {
-            return NextResponse.json(categories);
-        }
-    } catch (error) {
-        return NextResponse.json({ message: error.message });
+  try {
+    await connectDB();
+    const categories = await CategoriesModel.find({ userId: userId });
+    if (categories) {
+      return NextResponse.json(categories);
     }
+  } catch (error) {
+    return NextResponse.json({ message: error.message });
+  }
 }
 
 export async function POST(request) {
-    const authHeader = request.headers.get("authorization");
-    console.log("auth Header", authHeader);
+  const authHeader = request.headers.get("authorization");
+  console.log("auth Header", authHeader);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return NextResponse.json({ message: "Not Authorized, No Token" }, { status: 401 })
-    }
-    const token = authHeader.split(' ')[1]
-    console.log("token", token);
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json(
+      { message: "Not Authorized, No Token" },
+      { status: 401 }
+    );
+  }
+  const token = authHeader.split(" ")[1];
+  console.log("token", token);
 
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const userId = decoded.id;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.id;
+  try {
+    await connectDB();
+    const body = await request.json();
+    const { type, name } = body;
 
-    try {
-        await connectDB();
-        const body = await request.json();
-        const { type, name } = body;
-
-        const category = await CategoriesModel.create({
-            userId: userId,
-            type: type,
-            name: name,
-        });
-        return NextResponse.json({ message: "Category Created Successfully", category }, { status: 201 });
-    } catch (error) {
-        return NextResponse.json({ message: "Server Error", error: error.message }, { status: 500 });
-    }
+    const category = await CategoriesModel.create({
+      userId: userId,
+      type: type,
+      name: name,
+    });
+    return NextResponse.json(
+      { message: "Category Created Successfully", category },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Server Error", error: error.message },
+      { status: 500 }
+    );
+  }
 }

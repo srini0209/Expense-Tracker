@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { UserContext } from "../Context/UserContext.js";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const Header = () => {
   const path = usePathname();
@@ -61,7 +63,12 @@ const Header = () => {
 export default React.memo(Header);
 
 const Navbar = () => {
-    const router=useRouter();
+  "use client";
+  const router = useRouter();
+  // const { user, loading, error, clearUser } = useContext(UserContext);
+  // console.log("header.js user:", user);
+  // console.log("header.js localStorage token", localStorage.getItem("token"));
+
   return (
     <div className="flex flex-1 justify-end gap-8">
       <div className="flex items-center gap-9">
@@ -79,6 +86,12 @@ const Navbar = () => {
         </Link>
         <Link
           className="text-[#0d0c1d] text-sm font-medium leading-normal"
+          href="/categories"
+        >
+          Categories
+        </Link>
+        <Link
+          className="text-[#0d0c1d] text-sm font-medium leading-normal"
           href="#"
         >
           Budgets
@@ -87,14 +100,22 @@ const Navbar = () => {
           className="text-[#0d0c1d] text-sm font-medium leading-normal"
           href="#"
         >
-          <Image
-            src={"/globe.svg"}
+          {/* <Image
+            src={"/globe.svg" || user.profileImage}
             width={40}
             height={40}
             alt="Profile Picture"
-          />
+          /> */}
+          <IoSettingsOutline width={40} height={40}/>
         </Link>
-        <p className="bg-red-100/50 border-red-300 border text-red-500 text-sm px-3 py-2 rounded-lg cursor-pointer" onClick={()=>{localStorage.removeItem("token"); router.push("/login")}}>Logout</p>
+        <p
+          className="bg-red-100/50 border-red-300 border text-red-500 text-sm px-3 py-2 rounded-lg cursor-pointer"
+          onClick={() => {clearUser();
+            router.push('/login');
+          }}
+        >
+          Logout
+        </p>
       </div>
     </div>
   );
