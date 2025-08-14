@@ -1,13 +1,21 @@
 import React from "react";
-import { CircularProgress, Box } from "@mui/material";
-import { LinearProgress } from "@mui/joy";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 const loading = () => {
   return (
-    <div className="flex justify-center items-center">
-      <h3 className="text-xl text-slate-800">Loading...</h3>
-      <LinearProgress />
-    </div>
+    <Box 
+      display="flex" 
+      flexDirection="column"
+      justifyContent="center" 
+      alignItems="center"
+      height="100vh"
+      gap={2}
+    >
+      <CircularProgress size={60} thickness={4} />
+      <Typography variant="h6" color="textSecondary">
+        Loading transactions...
+      </Typography>
+    </Box>
   );
 };
 

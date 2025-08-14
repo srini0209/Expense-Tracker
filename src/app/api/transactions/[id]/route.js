@@ -17,7 +17,7 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
-    const { id } = await params;
+  const { id } = await params;
   try {
     await connectDB();
     const data = await request.json();
@@ -28,6 +28,21 @@ export async function PUT(request, { params }) {
   } catch (error) {
     return NextResponse.json({
       message: "Error updating Transaction",
+      error: error.message,
+    });
+  }
+}
+
+export async function DELETE(request, { params }) {
+  const { id } = await params;
+  try {
+    await connectDB();
+    // const data = await request.json();
+    const txn = await TransactionsModel.findByIdAndDelete(id);
+    return NextResponse.json(txn);
+  } catch (error) {
+    return NextResponse.json({
+      message: "Error deleting Transaction",
       error: error.message,
     });
   }

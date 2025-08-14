@@ -4,8 +4,9 @@ import userModel from "../../../../models/UserModel.js";
 import { NextResponse } from "next/server.js";
 import jwt from "jsonwebtoken";
 import customMiddleware from "../../customMiddleware.js";
+import mongoose from "mongoose";
 
-export async function GET(request) {
+export async function GET(request, { params }) {
   const authHeader = request.headers.get("authorization");
   console.log("auth Header", authHeader);
 
@@ -33,13 +34,68 @@ export async function GET(request) {
   //   userId = mwres;
   // }
   try {
+    const filter = { userId: userId };
+    // const today = new Date();
+    // console.log("today", today.toISOString())
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type");
+    const category = searchParams.get("category");
+    const limitCount = searchParams.get("limit")
+    if (type) filter.txnType = type;
+    if (category) filter.category = category;
+
     await connectDB();
     // request.user = await userModel.findById(userId).select("-password");
 
+    console.log("api/transactions/route.js fitter:", filter);
+    console.log("api/transactions/route.js Type:", type);
     console.log("api/transactions/route.js userId:", userId);
-    const txns = await TransactionsModel.find({ userId: userId });
+    const txns = await TransactionsModel.find(filter).sort({ date: -1 }).limit(limitCount ? limitCount : '');
+
+    const Incomepipeline =
+      [
+        {
+          '$match': {
+            'userId': new mongoose.Types.ObjectId(userId),
+            'txnType': 'Income'
+          }
+        }, {
+          '$group': {
+            '_id': null,
+            'totIncome': {
+              '$sum': '$amount'
+            }
+          }
+        }
+      ]
+    console.log("/transactions/route.js IncomeResult:")
+    const IncomeResult = await TransactionsModel.aggregate(Incomepipeline);
+    console.log("/transactions/route.js IncomeResult:", IncomeResult);
+    const totalIncome = IncomeResult[0].totIncome || 0;
+
+
+    const Expensepipeline = [
+      {
+        '$match': {
+          'userId': new mongoose.Types.ObjectId(userId),
+          'txnType': 'Expense'
+        }
+      }, {
+        '$group': {
+          '_id': null,
+          'totExpense': {
+            '$sum': '$amount'
+          }
+        }
+      }
+    ]
+    const ExpenseResult = await TransactionsModel.aggregate(Expensepipeline);
+    console.log("/transactions/route.js ExpenseResult:", ExpenseResult);
+    const totalExpense = ExpenseResult[0].totExpense || 0;
+
+    const res = { txns, totalExpense, totalIncome };
     if (txns) {
-      return NextResponse.json(txns);
+      return NextResponse.json(res);
     }
   } catch (error) {
     return NextResponse.json({

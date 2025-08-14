@@ -4,12 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { UserContext } from "../Context/UserContext.js";
-import { IoSettingsOutline } from "react-icons/io5";
+
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 const Header = () => {
   const path = usePathname();
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7e6f4] bg-[#f8f8fc] px-10 py-3">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid sticky top-0 border-b-[#e7e6f4] bg-[#f8f8fc] px-10 py-3">
       <div className="flex items-center gap-4 text-[#0d0c1d]">
         <div className="size-4">
           <Image src={"/window.svg"} alt="Logo Image" width={40} height={40} />
@@ -106,7 +107,7 @@ const Navbar = () => {
             height={40}
             alt="Profile Picture"
           /> */}
-          <IoSettingsOutline width={40} height={40}/>
+          <SettingsOutlinedIcon sx={{fontSize:30}}/>
         </Link>
         <p
           className="bg-red-100/50 border-red-300 border text-red-500 text-sm px-3 py-2 rounded-lg cursor-pointer"

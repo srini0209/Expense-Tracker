@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import RadioGroup from "./Inputs/RadioGroup.js";
 import Input from "./Inputs/Input.js";
 import Form from "next/form";
+import { Button } from "@mui/material";
 import axiosInstance from "../axiosInstance.js";
 import { useRouter } from "next/navigation.js";
 import toast from "react-hot-toast";
@@ -36,15 +37,27 @@ const CategoriesForm = ({ initialData = {} }) => {
         );
 
         console.log("Category updated Successfully- updated Category:", res);
-        toast.success("Category Updated")
+        toast.success("Category Updated");
       } else {
         const res = await axiosInstance.post(`/api/categories/`, data);
         console.log("Category Created Successfully- Created Category:", res);
-        toast.success("Category Created")
+        toast.success("Category Created");
       }
     } catch (error) {
       console.log("error on Editing or creating Category:", error.message);
-      
+    } finally {
+      router.push("/categories");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await axiosInstance.delete(`/api/categories/${id}`);
+      console.log("Deleted successfully -id:", id);
+      console.log("Deleted successfully res:", res);
+      toast.success("Category Deleted");
+    } catch (error) {
+      console.log("Error deleting Category", error);
     } finally {
       router.push("/categories");
     }
@@ -67,12 +80,25 @@ const CategoriesForm = ({ initialData = {} }) => {
       {error && (
         <p className="text-red-500 font-medium text-[13px] pb-3">{error}</p>
       )}
-      <button
-        type="submit"
-        className="bg-blue-500 text-white rounded py-2 px-3 mt-3 cursor-pointer"
-      >
-        {isEditing ? "Update" : "Save"}
-      </button>
+      <div className="flex justify-end gap-5 items-center mt-3">
+        {isEditing ? (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => handleDelete(initialData._id)}
+          >
+            Delete
+          </Button>
+        ) : (
+          ""
+        )}
+        <button
+          type="submit"
+          className="text-blue-500 border border-blue-300 bg-blue-100  rounded py-1.5 px-3 cursor-pointer"
+        >
+          {isEditing ? "Update" : "Save"}
+        </button>
+      </div>
     </Form>
   );
 };

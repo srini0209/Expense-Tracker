@@ -9,12 +9,13 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
+  InputLabel, Button
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axiosInstance from "../../axiosInstance.js";
+import toast from "react-hot-toast";
 // import { log } from "console";
 
 const TransactionForm = ({ initialData = {} }) => {
@@ -98,12 +99,14 @@ const TransactionForm = ({ initialData = {} }) => {
           "Transaction updated Successfully- updated Transaction:",
           res
         );
+        toast.success("Transaction Updated");
       } else {
         const res = await axiosInstance.post(`/api/transactions/`, data);
         console.log(
           "Transaction Created Successfully- Created Transaction:",
           res
         );
+        toast.success("Transaction Created");
       }
     } catch (error) {
       console.log("error on Editing or creating transaction:", error.message);
@@ -111,6 +114,20 @@ const TransactionForm = ({ initialData = {} }) => {
       router.push("/transactions");
     }
   };
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await axiosInstance.delete(`/api/transactions/${id}`)
+      console.log("Deleted successfully -id:", id)
+      console.log("Deleted successfully res:", res)
+      toast.success("Transaction Deleted")
+    } catch (error) {
+      console.log("Error deleting txn", error)
+
+    } finally {
+      router.push('/transactions')
+    }
+  }
 
   return (
     <div className="w-[60%] mx-auto my-20">
@@ -120,7 +137,7 @@ const TransactionForm = ({ initialData = {} }) => {
         <RadioGroup
           title={"Transaction Type"}
           value={type}
-          onChange={(e) => {setType(e.target.value); setCategory("")}}
+          onChange={(e) => { setType(e.target.value); setCategory("") }}
           values={["Expense", "Income"]}
         />
         <Input
@@ -193,14 +210,22 @@ const TransactionForm = ({ initialData = {} }) => {
         {error && (
           <p className="text-red-500 font-medium text-[13px] pb-3">{error}</p>
         )}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white rounded py-2 px-3 mt-3 cursor-pointer"
-        >
-          {isEditing ? "Update" : "Save"}
-        </button>
+        <div className="flex justify-end gap-5 items-center mt-3">
+
+          {isEditing ?
+            <Button variant="outlined" color="error" onClick={() => handleDelete(initialData._id)}>
+              Delete
+            </Button> : ""
+          }
+          <button
+            type="submit"
+            className="text-blue-500 border border-blue-300 bg-blue-100  rounded py-1.5 px-3 cursor-pointer"
+          >
+            {isEditing ? "Update" : "Save"}
+          </button>
+        </div>
       </Form>
-    </div>
+    </div >
   );
 };
 export default TransactionForm;
