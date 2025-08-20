@@ -5,17 +5,17 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { UserContext } from "../Context/UserContext.js";
 
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 const Header = () => {
   const path = usePathname();
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid sticky top-0 border-b-[#e7e6f4] bg-[#f8f8fc] px-10 py-3">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid sticky top-0 border-b-[#e7e6f4] bg-[#303f9f] px-10 py-3">
       <div className="flex items-center gap-4 text-[#0d0c1d]">
         <div className="size-4">
           <Image src={"/window.svg"} alt="Logo Image" width={40} height={40} />
         </div>
-        <h2 className="text-[#0d0c1d] text-lg font-bold leading-tight tracking-[-0.015em]">
+        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
           FinTrack
         </h2>
       </div>
@@ -66,6 +66,8 @@ export default React.memo(Header);
 const Navbar = () => {
   "use client";
   const router = useRouter();
+  const path = usePathname();
+
   // const { user, loading, error, clearUser } = useContext(UserContext);
   // console.log("header.js user:", user);
   // console.log("header.js localStorage token", localStorage.getItem("token"));
@@ -74,31 +76,33 @@ const Navbar = () => {
     <div className="flex flex-1 justify-end gap-8">
       <div className="flex items-center gap-9">
         <Link
-          className="text-[#0d0c1d] text-sm font-medium leading-normal"
+          className="text-white text-[0.875rem] font-medium leading-normal"
           href="/dashboard"
         >
           Dashboard
         </Link>
         <Link
-          className="text-[#0d0c1d] text-sm font-medium leading-normal"
+          className={`   text-[0.875rem] font-medium leading-normal ${
+            path == "/transactions" ? "text-[#4caf50]" : "text-white"
+          }`}
           href="/transactions"
         >
           Transactions
         </Link>
         <Link
-          className="text-[#0d0c1d] text-sm font-medium leading-normal"
+          className="text-white text-[0.875rem] font-medium leading-normal"
           href="/categories"
         >
           Categories
         </Link>
         <Link
-          className="text-[#0d0c1d] text-sm font-medium leading-normal"
+          className="text-white text-[0.875rem] font-medium leading-normal"
           href="#"
         >
           Budgets
         </Link>
         <Link
-          className="text-[#0d0c1d] text-sm font-medium leading-normal"
+          className="text-white text-sm font-medium leading-normal"
           href="#"
         >
           {/* <Image
@@ -107,12 +111,13 @@ const Navbar = () => {
             height={40}
             alt="Profile Picture"
           /> */}
-          <SettingsOutlinedIcon sx={{fontSize:30}}/>
+          <SettingsOutlinedIcon sx={{ fontSize: 30 }} />
         </Link>
         <p
-          className="bg-red-100/50 border-red-300 border text-red-500 text-sm px-3 py-2 rounded-lg cursor-pointer"
-          onClick={() => {clearUser();
-            router.push('/login');
+          className="bg-error-500 hover:bg-error-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+          onClick={() => {
+            clearUser();
+            router.push("/login");
           }}
         >
           Logout

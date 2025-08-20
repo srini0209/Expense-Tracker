@@ -1,9 +1,10 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import { UserProvider, UserContext } from "./Context/UserContext.js";
 import { Toaster } from "react-hot-toast";
+import MuiThemeProvider from "./ThemeProvider";
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
 //   subsets: ["latin"],
@@ -18,6 +19,12 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter-mono",
 });
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+  variable: "--font-be-vietnam-pro",
+});
 
 export const metadata = {
   title: "Expense Tracker",
@@ -26,26 +33,28 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} antialiased`}>
+    <html lang="en" className={`${beVietnamPro.variable} font-sans`}>
+      <body className={`${beVietnamPro.className}  antialiased bg-[#f5f5f5]` }>
         <div
-          className="relative flex size-full min-h-screen flex-col bg-[#f8f8fc] group/design-root overflow-x-hidden"
+          className="relative flex size-full min-h-screen flex-col bg-[#f5f5f5] group/design-root overflow-x-hidden"
           style={{ fontFamily: "Inter, Noto Sans, sans-serif" }}
         >
           <div className="layout-container flex h-full grow flex-col">
-            <UserProvider>
-              <Header />
-              {children}
-              <Footer />
-              <Toaster
-                toastOptions={{
-                  className: "",
-                  style: {
-                    fontSize: "13px",
-                  },
-                }}
-              />
-            </UserProvider>
+            <MuiThemeProvider>
+              <UserProvider>
+                <Header />
+                {children}
+                <Footer />
+                <Toaster
+                  toastOptions={{
+                    className: "",
+                    style: {
+                      fontSize: "13px",
+                    },
+                  }}
+                />
+              </UserProvider>
+            </MuiThemeProvider>
           </div>
         </div>
       </body>

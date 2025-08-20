@@ -45,7 +45,7 @@ const Categories = () => {
         <h2 className="text-slate-800 text-2xl font-bold">Categories</h2>
         <Link
           href={"/categories/add"}
-          className="px-3 py-2 mt-5 bg-amber-100/50 border border-amber-300 text-amber-600 rounded"
+          className="px-3 py-2 bg-amber-100/50 border border-amber-300 text-amber-600 rounded"
         >
           Add Category
         </Link>
