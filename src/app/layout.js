@@ -37,7 +37,7 @@ export default function RootLayout({ children }) {
       <body className={`${beVietnamPro.className}  antialiased bg-[#f5f5f5]` }>
         <div
           className="relative flex size-full min-h-screen flex-col bg-[#f5f5f5] group/design-root overflow-x-hidden"
-          style={{ fontFamily: "Inter, Noto Sans, sans-serif" }}
+          
         >
           <div className="layout-container flex h-full grow flex-col">
             <MuiThemeProvider>

@@ -95,9 +95,9 @@ const page = () => {
     fontWeight: 600,
     fontSize: 16,
   };
-  return (<div className="w-[60%] mx-auto my-20">
+  return (<div className="lg:w-[70%] md:w-[80%]  w-full px-10 mx-auto my-20">
     <div className="flex flex-row text-black items-center justify-between mb-4">
-      <h2 className="text-4xl font-bold ">Transactions</h2>
+      <h2 className="text-3xl font-semibold ">Transactions</h2>
       <Link
         href={"/transactions/add"}
         className="bg-blue-50 border-blue-200 border px-4 py-2 items-center rounded-lg font-medium text-blue-600 "
@@ -116,7 +116,7 @@ const page = () => {
             labelId="Txn-type-selector-label"
             id="Txn-type"
             value={type}
-
+            // sx={{paddingBottom:'5px', paddingTop:'5px'}}
             label="Transaction Type"
             onChange={(e) => { setType(e.target.value); setCategory(""); }}>
             <MenuItem key={'Expense'} value='Expense'>Expense</MenuItem>

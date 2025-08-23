@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Table,
@@ -6,14 +7,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper, colors
+  Paper,
+  colors,
 } from "@mui/material";
 import moment from "moment";
 import { FaEdit } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const TransactionTable = ({rows,theadStyles}) => {
+const TransactionTable = ({ rows, theadStyles }) => {
+  const router = useRouter();
+  const TCellStyles = { fontSize: 14, fontWeight: 400 };
   return (
     <TableContainer component={Paper}>
       <Table
@@ -21,6 +26,7 @@ const TransactionTable = ({rows,theadStyles}) => {
           minWidth: 650,
           minHeight: 200,
           borderWidth: 1,
+          borderRadius: 20,
           borderColor: "#eff6ff",
         }}
         aria-label="Transactions table"
@@ -49,20 +55,27 @@ const TransactionTable = ({rows,theadStyles}) => {
             <TableRow
               key={row._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              onClick={() => {
+                router.push(`/transactions/${row._id}`);
+              }}
             >
-              <TableCell scope="row" align="center" sx={{fontSize:15,fontWeight:400}}>
+              <TableCell scope="row" align="center" sx={TCellStyles}>
                 {moment(row.date).format("DD-MM-YYYY hh:mm A")}
               </TableCell>
-              <TableCell align="center">{row.category}</TableCell>
-              <TableCell align="center">{row.description}</TableCell>
+              <TableCell align="center" sx={TCellStyles}>
+                {row.category}
+              </TableCell>
+              <TableCell align="center" sx={TCellStyles}>
+                {row.description}
+              </TableCell>
               <TableCell
                 align="center"
                 sx={{
+                  ...TCellStyles,
                   color:
                     row.txnType === "Expense"
                       ? colors.red[500]
                       : colors.green["A400"],
-                  fontWeight: 500,
                 }}
               >
                 ₹{row.amount}
