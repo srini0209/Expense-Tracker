@@ -4,6 +4,73 @@
   --background: #f5f5f5;
   --foreground: #171717;
 }
+/* globals.css */
+
+/* Apply Be Vietnam Pro to ALL elements (including MUI) */
+* {
+  font-family: var(--font-be-vietnam-pro), "Be Vietnam Pro", sans-serif !important;
+}
+
+/* Specific targeting for ALL MUI components */
+[class*="Mui"],
+.MuiTypography-root,
+.MuiButton-root,
+.MuiButton-text,
+.MuiButton-contained,
+.MuiButton-outlined,
+.MuiTextField-root,
+.MuiInputBase-root,
+.MuiInputBase-input,
+.MuiFormLabel-root,
+.MuiInputLabel-root,
+.MuiMenuItem-root,
+.MuiMenu-list,
+.MuiDialog-root,
+.MuiDialogTitle-root,
+.MuiDialogContent-root,
+.MuiDialogActions-root,
+.MuiPaper-root,
+.MuiCard-root,
+.MuiCardContent-root,
+.MuiCardHeader-root,
+.MuiAppBar-root,
+.MuiToolbar-root,
+.MuiList-root,
+.MuiListItem-root,
+.MuiListItemText-root,
+.MuiTab-root,
+.MuiTabs-root,
+.MuiChip-root,
+.MuiSelect-root,
+.MuiFormControl-root,
+.MuiFormHelperText-root,
+.MuiAlert-root,
+.MuiSnackbar-root,
+.MuiTooltip-tooltip,
+.MuiTableCell-root,
+.MuiTableHead-root,
+.MuiDataGrid-root,
+.MuiAccordion-root,
+.MuiAccordionSummary-root,
+.MuiAccordionDetails-root {
+  font-family: var(--font-be-vietnam-pro), "Be Vietnam Pro", sans-serif !important;
+}
+
+/* Target all typography variants specifically */
+.MuiTypography-h1,
+.MuiTypography-h2,
+.MuiTypography-h3,
+.MuiTypography-h4,
+.MuiTypography-h5,
+.MuiTypography-h6,
+.MuiTypography-subtitle1,
+.MuiTypography-subtitle2,
+.MuiTypography-body1,
+.MuiTypography-body2,
+.MuiTypography-caption,
+.MuiTypography-overline {
+  font-family: var(--font-be-vietnam-pro), "Be Vietnam Pro", sans-serif !important;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -18,7 +85,7 @@
   --color-primary-700: #303f9f;
   --color-primary-800: #283593;
   --color-primary-900: #1a237e;
-  
+
   --color-secondary-50: #e8f5e9;
   --color-secondary-100: #c8e6c9;
   --color-secondary-200: #a5d6a7;
@@ -29,7 +96,7 @@
   --color-secondary-700: #388e3c;
   --color-secondary-800: #2e7d32;
   --color-secondary-900: #1b5e20;
-  
+
   --color-error-50: #ffebee;
   --color-error-100: #ffcdd2;
   --color-error-200: #ef9a9a;
@@ -40,7 +107,7 @@
   --color-error-700: #d32f2f;
   --color-error-800: #c62828;
   --color-error-900: #b71c1c;
-  
+
   --color-warning-50: #fff8e1;
   --color-warning-100: #ffecb3;
   --color-warning-200: #ffe082;
@@ -51,12 +118,11 @@
   --color-warning-700: #e65100;
   --color-warning-800: #d84315;
   --color-warning-900: #bf360c;
-  
+
   --color-text-primary: #212121;
   --color-text-secondary: #757575;
-  
-  --font-family-sans: "Be Vietnam Pro", sans-serif;
 
+  --font-family-sans: "Be Vietnam Pro", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

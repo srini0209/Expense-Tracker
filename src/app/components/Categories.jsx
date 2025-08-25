@@ -13,9 +13,11 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { FaEdit } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const router = useRouter();
   const fetchCategories = async () => {
     try {
       const cat = await axiosInstance.get("/api/categories");
@@ -60,25 +62,20 @@ const Categories = () => {
               <TableCell sx={theadStyles} align="center">
                 Category Name
               </TableCell>
-              <TableCell sx={theadStyles} align="center">
-                View/Edit
-              </TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => (
               <TableRow
                 key={row._id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                onClick={()=>{router.push(`/categories/${row._id}`)}}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 },cursor:'pointer' }}
               >
                 <TableCell align="center">{row.type}</TableCell>
                 <TableCell align="center">{row.name}</TableCell>
 
-                <TableCell align="center">
-                  <Link href={`/categories/${row._id}`}>
-                    <FaEdit className="text-blue-500 text-xl" />
-                  </Link>
-                </TableCell>
+                
               </TableRow>
             ))}
           </TableBody>

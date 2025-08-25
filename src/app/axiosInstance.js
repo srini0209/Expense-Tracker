@@ -15,11 +15,11 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("token");
-    console.log("Interceptor token:", accessToken); //  DEBUG
+    // console.log("Interceptor token:", accessToken); //  DEBUG
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    console.log("Request headers after adding token:", config.headers); //  DEBUG
+    // console.log("Request headers after adding token:", config.headers); //  DEBUG
     return config;
   },
   (error) => {

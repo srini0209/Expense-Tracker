@@ -33,14 +33,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${beVietnamPro.variable} font-sans`}>
-      <body className={`${beVietnamPro.className}  antialiased bg-[#f5f5f5]` }>
+    <html lang="en" className={beVietnamPro.variable}>
+      <body className={`${beVietnamPro.className} antialiased bg-[#f5f5f5]` }>
         <div
           className="relative flex size-full min-h-screen flex-col bg-[#f5f5f5] group/design-root overflow-x-hidden"
           
         >
           <div className="layout-container flex h-full grow flex-col">
-            <MuiThemeProvider>
+            {/* <MuiThemeProvider> */}
               <UserProvider>
                 <Header />
                 {children}
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
                   }}
                 />
               </UserProvider>
-            </MuiThemeProvider>
+            {/* </MuiThemeProvider> */}
           </div>
         </div>
       </body>

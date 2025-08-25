@@ -9,7 +9,8 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel, Button
+  InputLabel,
+  Button,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -117,27 +118,29 @@ const TransactionForm = ({ initialData = {} }) => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axiosInstance.delete(`/api/transactions/${id}`)
-      console.log("Deleted successfully -id:", id)
-      console.log("Deleted successfully res:", res)
-      toast.success("Transaction Deleted")
+      const res = await axiosInstance.delete(`/api/transactions/${id}`);
+      console.log("Deleted successfully -id:", id);
+      console.log("Deleted successfully res:", res);
+      toast.success("Transaction Deleted");
     } catch (error) {
-      console.log("Error deleting txn", error)
-
+      console.log("Error deleting txn", error);
     } finally {
-      router.push('/transactions')
+      router.push("/transactions");
     }
-  }
+  };
 
   return (
     <div className="w-[60%] mx-auto my-20">
       <h1 className="text-4xl text-black font-bold mb-10">Add Transaction</h1>
 
-      <Form onSubmit={submitHandler} className="md:w-[60%] w-full">
+      <Form  className="md:w-[60%] w-full">
         <RadioGroup
           title={"Transaction Type"}
           value={type}
-          onChange={(e) => { setType(e.target.value); setCategory("") }}
+          onChange={(e) => {
+            setType(e.target.value);
+            setCategory("");
+          }}
           values={["Expense", "Income"]}
         />
         <Input
@@ -211,21 +214,25 @@ const TransactionForm = ({ initialData = {} }) => {
           <p className="text-red-500 font-medium text-[13px] pb-3">{error}</p>
         )}
         <div className="flex justify-end gap-5 items-center mt-3">
-
-          {isEditing ?
-            <Button variant="outlined" color="error" onClick={() => handleDelete(initialData._id)}>
+          {isEditing ? (
+            <button
+              className="bg-error-500 hover:bg-error-600 text-white px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-colors duration-200"
+              onClick={() => handleDelete(initialData._id)}
+            >
               Delete
-            </Button> : ""
-          }
+            </button>
+          ) : (
+            ""
+          )}
           <button
-            type="submit"
-            className="text-blue-500 border border-blue-300 bg-blue-100  rounded py-1.5 px-3 cursor-pointer"
+            type="submit" onClick={submitHandler}
+          className="text-blue-500 border hover:bg-blue-200 border-blue-300 bg-blue-100 text-sm font-medium  rounded-md px-4 py-2 cursor-pointer transition-colors duration-200"
           >
             {isEditing ? "Update" : "Save"}
           </button>
         </div>
       </Form>
-    </div >
+    </div>
   );
 };
 export default TransactionForm;

@@ -1,3 +1,4 @@
+//theme.js file
 import { Be_Vietnam_Pro } from "next/font/google";
 import { createTheme } from "@mui/material/styles";
 
@@ -8,10 +9,14 @@ const beVietnamPro = Be_Vietnam_Pro({
   variable: "--font-be-vietnam-pro",
 });
 
-const theme = createTheme({
-  typography: {
-    fontFamily: beVietnamPro.style.fontFamily,
-  },
-});
+// ✅ Function that creates theme safely
+export const getTheme = () => {
+  return createTheme({
+    typography: {
+      fontFamily: beVietnamPro.style?.fontFamily || '"Be Vietnam Pro", sans-serif',
+    },
+  });
+};
 
-export default theme;
+// Don't export the theme directly - export the function
+export default getTheme;

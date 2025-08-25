@@ -8,11 +8,11 @@ const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "3d" });
 };
 export async function POST(request) {
-  const authHeader = request.headers.get("Authorization");
-  const token = authHeader.split(" ")[1];
+  const authHeader = request.headers?.get("Authorization");
+  const token = authHeader?.split(" ")[1];
 
   if (token) {
-    return NextResponse.redirect("/dashboard");
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
   try {
     await connectDB();

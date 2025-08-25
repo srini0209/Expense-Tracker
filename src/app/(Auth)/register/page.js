@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Form from "next/form";
 import LoginSigupTab from "../../components/LoginSigupTab.js";
@@ -49,6 +49,12 @@ const page = () => {
       throw error; // Rethrow error for handling
     }
   };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
   const handleRegistration = async (e) => {
     e.preventDefault();
 

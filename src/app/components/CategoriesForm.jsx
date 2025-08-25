@@ -63,7 +63,7 @@ const CategoriesForm = ({ initialData = {} }) => {
     }
   };
   return (
-    <Form onSubmit={submitHandler} className="md:w-[60%] w-full">
+    <Form  className="md:w-[60%] w-full">
       <RadioGroup
         title={"Transaction Type"}
         value={type}
@@ -82,19 +82,18 @@ const CategoriesForm = ({ initialData = {} }) => {
       )}
       <div className="flex justify-end gap-5 items-center mt-3">
         {isEditing ? (
-          <Button
-            variant="outlined"
-            color="error"
+          <button
+            className="bg-error-500 hover:bg-error-600 text-white px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-colors duration-200"
             onClick={() => handleDelete(initialData._id)}
           >
             Delete
-          </Button>
+          </button>
         ) : (
           ""
         )}
         <button
-          type="submit"
-          className="text-blue-500 border border-blue-300 bg-blue-100  rounded py-1.5 px-3 cursor-pointer"
+          type="submit" onClick={submitHandler}
+          className="text-blue-500 border hover:bg-blue-200 border-blue-300 bg-blue-100 text-sm font-medium  rounded-md px-4 py-2 cursor-pointer transition-colors duration-200"
         >
           {isEditing ? "Update" : "Save"}
         </button>
