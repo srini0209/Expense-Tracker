@@ -12,7 +12,6 @@ import {
   colors,
 } from "@mui/material";
 import Link from "next/link";
-import { FaEdit } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
 const Categories = () => {
@@ -62,25 +61,63 @@ const Categories = () => {
               <TableCell sx={theadStyles} align="center">
                 Category Name
               </TableCell>
-              
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => (
               <TableRow
                 key={row._id}
-                onClick={()=>{router.push(`/categories/${row._id}`)}}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 },cursor:'pointer' }}
+                onClick={() => {
+                  router.push(`/categories/${row._id}`);
+                }}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  cursor: "pointer",
+                }}
               >
                 <TableCell align="center">{row.type}</TableCell>
                 <TableCell align="center">{row.name}</TableCell>
-
-                
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="flex flex-row">
+        <div className="w-[50%] justify-center items-center">
+          <h2 className="text-2xl font-medium text-center text-green-500 mb-3">
+            Income
+          </h2>
+          <div className="flex flex-col gap-2 w-[120px] mx-auto">
+            {rows
+              .filter((row) => row.type === "Income")
+              .map((row) => (
+                <Link
+                  href={`/categories/${row._id}`}
+                  key={row._id}
+                  className="font-medium w-full text-center border border-green-200 bg-green-100 text-green-500 px-3 py-2 rounded-lg cursor-pointer mx-auto"
+                >
+                  {row.name}
+                </Link>
+              ))}
+          </div>
+        </div>
+        <div className="w-[50%] justify-center text-center items-center">
+          <h2 className="text-2xl font-medium text-orange-500 mb-3">Expense</h2>
+          <div className="flex flex-col gap-2 w-[120px] mx-auto">
+            {rows
+              .filter((row) => row.type === "Expense")
+              .map((row) => (
+                <Link
+                  href={`/categories/${row._id}`}
+                  key={row._id}
+                  className="font-medium w-full text-center border border-orange-200 bg-orange-100 text-orange-500 px-3 py-2 rounded-lg cursor-pointer mx-auto"
+                >
+                  {row.name}
+                </Link>
+              ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

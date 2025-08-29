@@ -50,7 +50,8 @@ const CategoriesForm = ({ initialData = {} }) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, e) => {
+    e.preventDefault();
     try {
       const res = await axiosInstance.delete(`/api/categories/${id}`);
       console.log("Deleted successfully -id:", id);
@@ -63,7 +64,7 @@ const CategoriesForm = ({ initialData = {} }) => {
     }
   };
   return (
-    <Form  className="md:w-[60%] w-full">
+    <Form className="md:w-[60%] w-full">
       <RadioGroup
         title={"Transaction Type"}
         value={type}
@@ -82,21 +83,21 @@ const CategoriesForm = ({ initialData = {} }) => {
       )}
       <div className="flex justify-end gap-5 items-center mt-3">
         {isEditing ? (
-          <button
+          <p
             className="bg-error-500 hover:bg-error-600 text-white px-4 py-2 cursor-pointer rounded-md text-sm font-medium transition-colors duration-200"
-            onClick={() => handleDelete(initialData._id)}
+            onClick={(e) => handleDelete(initialData._id, e)}
           >
             Delete
-          </button>
+          </p>
         ) : (
           ""
         )}
-        <button
-          type="submit" onClick={submitHandler}
+        <p
+          onClick={submitHandler}
           className="text-blue-500 border hover:bg-blue-200 border-blue-300 bg-blue-100 text-sm font-medium  rounded-md px-4 py-2 cursor-pointer transition-colors duration-200"
         >
           {isEditing ? "Update" : "Save"}
-        </button>
+        </p>
       </div>
     </Form>
   );

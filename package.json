@@ -21,6 +21,7 @@
     "dayjs": "^1.11.13",
     "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.542.0",
     "moment": "^2.30.1",
     "mongoose": "^8.17.0",
     "multer": "^2.0.2",

@@ -1,5 +1,6 @@
 import connectDB from "../../../../../utils/dbConnect.js";
 import UserModel from "../../../../../models/UserModel.js";
+import CategoriesModel from "../../../../../models/CategoriesModel.js"
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -42,6 +43,18 @@ export async function POST(request) {
       createdAt: Date.now(),
     });
 
+    const defaultCategories = [
+      { type: "Income", name: "Salary" },
+      { type: "Income", name: "Dividend" },
+      { type: "Income", name: "Rental" },
+      { type: "Expense", name: "Food" },
+      { type: "Expense", name: "Transport" },
+      { type: "Expense", name: "Rent" },
+      { type: "Expense", name: "Bill Payments" },
+      { type: "Expense", name: "Groceries" },
+    ].map((cat) => ({ userId: user._id, ...cat }))
+    const Categories = await CategoriesModel.insertMany(defaultCategories);
+
     return NextResponse.json(
       {
         message: "User Registered Successfully",
@@ -52,6 +65,7 @@ export async function POST(request) {
           profileImage: user.profileImage,
           createdAt: user.createdAt,
           token: generateToken(user._id),
+          categories:Categories
         },
       },
       { status: 201 }

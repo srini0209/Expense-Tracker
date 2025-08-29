@@ -10,9 +10,10 @@ export default function PieActiveArc({ data, type }) {
     .filter((d) => d.txnType == type)[0]
     .categories.map((item) => ({
       label: item.category,
-      value:
-       Math.round( (item?.totalAmount / (type == "Income" ? totalIncome : totalExpense)) *
-        100),
+      value: (
+        (item?.totalAmount / (type == "Income" ? totalIncome : totalExpense)) *
+        100
+      ).toFixed(2),
     }));
 
   console.log("PieChart Data:", TxnType);

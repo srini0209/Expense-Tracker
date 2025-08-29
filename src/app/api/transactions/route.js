@@ -116,7 +116,6 @@ export async function GET(request, { params }) {
     //     },
     //   },
     // ];
-    // const ExpenseResult = await TransactionsModel.aggregate(Expensepipeline);
     // console.log("/transactions/route.js ExpenseResult:", ExpenseResult);
     // const totalExpense = ExpenseResult[0].totExpense || 0;
 
@@ -157,7 +156,7 @@ export async function GET(request, { params }) {
         },
       },
       {
-        $sort: { totalAmount: -1 },
+        $sort: { _id: -1 },
       },
       {
         $project: {
