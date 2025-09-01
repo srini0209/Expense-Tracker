@@ -11,11 +11,13 @@ import toast from "react-hot-toast";
 const CategoriesForm = ({ initialData = {} }) => {
   const [type, setType] = useState(initialData?.type || "Expense");
   const [name, setName] = useState(initialData?.name || "");
+  const [budget, setBudget] = useState(initialData?.budget || 0);
   const [error, setError] = useState("");
   const router = useRouter();
   const isEditing = Boolean(initialData?._id);
 
   const data = { type, name };
+  type === "Expense" && (data.budget = budget);
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -78,6 +80,15 @@ const CategoriesForm = ({ initialData = {} }) => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+      {type === "Expense" && (
+        <Input
+          label={"Budget"}
+          type={"number"}
+          placeholder={"Enter Category Budget"}
+          value={budget}
+          onChange={(e) => setBudget(e.target.value)}
+        />
+      )}
       {error && (
         <p className="text-red-500 font-medium text-[13px] pb-3">{error}</p>
       )}

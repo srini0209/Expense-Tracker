@@ -34,26 +34,25 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={beVietnamPro.variable}>
-      <body className={`${beVietnamPro.className} antialiased bg-[#f5f5f5]` }>
-        <div
-          className="relative flex size-full min-h-screen flex-col bg-[#f5f5f5] group/design-root overflow-x-hidden"
-          
-        >
+      <body className={`${beVietnamPro.className} antialiased bg-[#f5f5f5]`}>
+        <div className="relative flex size-full min-h-screen flex-col bg-[#f5f5f5] group/design-root overflow-x-hidden">
           <div className="layout-container flex h-full grow flex-col">
             {/* <MuiThemeProvider> */}
-              <UserProvider>
-                <Header />
+            <UserProvider>
+              <Header />
+              <div className=" sm:w-[90%] md:w-[80%] lg:w-[75%] mx-auto">
                 {children}
-                <Footer />
-                <Toaster
-                  toastOptions={{
-                    className: "",
-                    style: {
-                      fontSize: "13px",
-                    },
-                  }}
-                />
-              </UserProvider>
+              </div>
+              <Footer />
+              <Toaster
+                toastOptions={{
+                  className: "",
+                  style: {
+                    fontSize: "13px",
+                  },
+                }}
+              />
+            </UserProvider>
             {/* </MuiThemeProvider> */}
           </div>
         </div>

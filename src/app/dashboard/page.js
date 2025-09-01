@@ -17,6 +17,8 @@ import axiosInstance from "../axiosInstance";
 import TransactionTable from "../components/TransactionTable";
 import Link from "next/link";
 import PieActiveArc from "../components/CategoriesChart";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import { ChartPie, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 
 const page = () => {
   // const { user, loading, error } = useContext(UserContext);
@@ -51,7 +53,6 @@ const page = () => {
   const [endDate, setEndDate] = useState(
     new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1)).toISOString()
   );
-
   // Fetching recent (10) Transactions
   const fetchRecentTransactions = async () => {
     try {
@@ -138,7 +139,7 @@ const page = () => {
     fontSize: 16,
   };
   return (
-    <div className="text-black text-center w-[1200px]  mx-auto text-2xl my-5">
+    <div className="text-black text-center w-full  mx-auto text-2xl my-5">
       {/* <p className="text-slate-800 text-[13px]">{JSON.stringify(user)}</p>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
@@ -153,42 +154,87 @@ const page = () => {
       <p className="text-black">{dayjsValue.toISOString()}</p> */}
       {loading ? (
         <div>Loading...</div>
-      ) : txnsLen>0? (
+      ) : txnsLen > 0 ? (
         <>
-          <div className="flex flex-row mx-auto gap-15 justify-between mb-10">
+          <div className="flex flex-col md:flex-row mx-auto gap-8 lg:flex-nowrap flex-wrap justify-between mb-10">
             {analyData.map((data) => (
               <div
                 key={data.txnType}
-                className={`${
-                  data.txnType === "Income"
-                    ? "bg-green-100 border border-green-300"
-                    : "bg-red-100 border border-red-300"
-                } px-5 py-5 w-full rounded-lg shadow`}
+                className={
+                  " bg-white px-5 py-5 lg:w-[33%]  w-[80%] mx-auto min-h-[300px] rounded-xl items-center shadow-xl gap-5"
+                }
               >
-                <h2>Total {data.txnType}</h2>
-                <h3
-                  className={`text-xl font-bold ${
-                    data.txnType === "Income"
-                      ? " text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {data.totalAmount}
-                </h3>
+                <div className="flex flex-row items-center gap-3">
+                  <div
+                    className={`px-3 py-2 rounded-lg ${
+                      data.txnType === "Income" ? "bg-green-100" : "bg-red-100"
+                    }`}
+                  >
+                    {data.txnType === "Income" ? (
+                      <BarChartIcon className=" text-green-500" />
+                    ) : (
+                      <BarChartIcon className="text-red-500" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-800 font-medium">
+                      {data.txnType} BreakDown
+                    </p>
+                  </div>
+                </div>
                 <PieActiveArc data={analyData} type={data.txnType} />
               </div>
             ))}
 
-            <div className="bg-blue-100 border border-blue-300 px-5 py-5 w-full rounded-lg shadow">
-              <h2>Balance</h2>
-              <h3 className="text-xl font-bold text-blue-500">
-                {analyData[0]?.totalAmount - analyData[1]?.totalAmount}
-              </h3>
+            <div className="bg-white px-10 lg:px-3 lg:w-[33%] w-[80%] mx-auto min-h-[300px] flex flex-col justify-evenly rounded-xl shadow-lg">
+              <div className="flex flex-row items-center gap-3">
+                <div className={"p-3 rounded-lg bg-green-100"}>
+                  <TrendingUp className=" text-green-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-800 font-medium text-left">
+                    Total Income
+                  </p>
+                  <h3 className="text-xl font-bold text-left text-green-500">
+                    ₹ {analyData[0]?.totalAmount}
+                  </h3>
+                </div>
+              </div>
+              <div className="flex flex-row items-center gap-3">
+                <div className={"p-3 rounded-lg bg-red-100"}>
+                  <TrendingDown className="text-red-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-800 font-medium text-left">
+                    Total Expense
+                  </p>
+                  <h3 className="text-xl font-bold text-left text-red-500">
+                    ₹ {analyData[1]?.totalAmount}
+                  </h3>
+                </div>
+              </div>
+              <div className="flex flex-row items-center gap-3">
+                <div className={"p-3 rounded-lg bg-blue-100"}>
+                  <Wallet className="text-blue-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-800 font-medium text-left">
+                    Balance
+                  </p>
+                  <h3 className="text-xl font-bold text-left text-blue-500">
+                    ₹ {analyData[0]?.totalAmount - analyData[1]?.totalAmount}
+                  </h3>
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="mb-5">
-            <TransactionTable rows={rows} txnsLen={txnsLen} theadStyles={theadStyles} />
+            <TransactionTable
+              rows={rows}
+              txnsLen={txnsLen}
+              theadStyles={theadStyles}
+            />
           </div>
           <div className="justify-end text-right">
             <Link
@@ -199,12 +245,22 @@ const page = () => {
             </Link>
           </div>
         </>
-      ):<>
-      <div>
-        <h2>No Transactions Found..</h2>
-        <p>Please start adding your Transactions here:<Link className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 text-sm rounded-md font-medium" href={'/transactions/add'}>Add</Link> </p>
-      </div>
-      </>}
+      ) : (
+        <>
+          <div>
+            <h2>No Transactions Found..</h2>
+            <p>
+              Please start adding your Transactions here:
+              <Link
+                className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 text-sm rounded-md font-medium"
+                href={"/transactions/add"}
+              >
+                Add
+              </Link>{" "}
+            </p>
+          </div>
+        </>
+      )}
     </div>
   );
 };

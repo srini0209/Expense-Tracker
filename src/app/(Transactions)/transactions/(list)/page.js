@@ -25,6 +25,7 @@ import { CircularProgress, LinearProgress } from "@mui/joy";
 import TransactionTable from "../../../../app/components/TransactionTable";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { ChevronRight,ChevronLeft } from "lucide-react";
 
 const page = () => {
   const [txns, setTxns] = useState([]);
@@ -133,7 +134,7 @@ const page = () => {
       <div className="flex flex-row justify-baseline gap-3 items-center mb-4">
         <div className="flex flex-row gap-4">
           <p
-            className="text-sm p-2 text-amber-500 cursor-pointer"
+            className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
             onClick={() => {
               let newstartDate = new Date(startDate);
               let newendDate = new Date(endDate);
@@ -143,10 +144,10 @@ const page = () => {
               setEndDate(newendDate);
             }}
           >
-            &lt;= Previous Month
+          <ChevronLeft /> Previous Month
           </p>
           <p
-            className="text-sm p-2 text-amber-500 cursor-pointer"
+            className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
             onClick={() => {
               let newstartDate = new Date(startDate);
               let newendDate = new Date(endDate);
@@ -156,7 +157,7 @@ const page = () => {
               setEndDate(newendDate);
             }}
           >
-            Next Month =&gt;
+            Next Month <ChevronRight />
           </p>
         </div>
         <div className="flex flex-col gap-2 w-[180px]">

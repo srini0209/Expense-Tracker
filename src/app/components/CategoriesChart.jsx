@@ -4,11 +4,13 @@ import { PieChart } from "@mui/x-charts/PieChart";
 
 export default function PieActiveArc({ data, type }) {
   const valueFormatter = (item) => `${item.value}%`;
+  const [highlighted, setHighlighted] = React.useState(null);
   const totalIncome = data[0]?.totalAmount;
   const totalExpense = data[1]?.totalAmount;
   const TxnType = data
     .filter((d) => d.txnType == type)[0]
-    .categories.map((item) => ({
+    .categories.map((item,index) => ({
+      id:index,
       label: item.category,
       value: (
         (item?.totalAmount / (type == "Income" ? totalIncome : totalExpense)) *
@@ -22,8 +24,7 @@ export default function PieActiveArc({ data, type }) {
       series={[
         {
           data: TxnType,
-          highlightScope: { fade: "global", highlight: "item" },
-          faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
+          highlightedItem: { faded: "global", highlighted: "item" },
           valueFormatter,
         },
       ]}

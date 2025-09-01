@@ -106,7 +106,7 @@ const Navbar = () => {
         </Link>
         <Link
           className="text-white text-[0.875rem] font-medium leading-normal"
-          href="#"
+          href="/budgets"
         >
           Budgets
         </Link>

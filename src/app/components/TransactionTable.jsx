@@ -9,6 +9,8 @@ import {
   TableRow,
   Paper,
   colors,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import moment from "moment";
 import { FaEdit } from "react-icons/fa";
@@ -17,26 +19,35 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const TransactionTable = ({ rows, theadStyles, txnsLen }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const TCellStyles = { fontSize: 14, fontWeight: 400 };
   return (
-    <TableContainer component={Paper}>
+    // <TableContainer component={Paper} >
       <Table
         sx={{
-          minWidth: 650,
+          minWidth: { sm: 650 },
+          width: { xs: '90%' },
+          marginRight:'auto',
+          marginLeft:'auto',
           minHeight: 200,
-          borderWidth: 1,
-          borderRadius: 20,
+         
+          borderRadius: '20px',
           borderColor: "#eff6ff",
         }}
+        className="bg-[#f5f5f5] mx-auto md:min-w-[650px] w-[90%] shadow-lg rounded-lg"
         aria-label="Transactions table"
       >
-        <TableHead>
-          <TableRow className="bg-violet-100 border border-violet-200">
+        <TableHead className="rounded-lg">
+          <TableRow className="bg-violet-100 border rounded-tr-lg rounded-tl-lg border-violet-200">
             <TableCell sx={theadStyles} align="center">
               Date
             </TableCell>
-            <TableCell sx={theadStyles} align="center">
+            <TableCell
+              sx={{ ...theadStyles, display: { xs: "none", sm: "block" } }}
+              align="center"
+            >
               Category
             </TableCell>
             <TableCell sx={theadStyles} align="center">
@@ -67,11 +78,24 @@ const TransactionTable = ({ rows, theadStyles, txnsLen }) => {
                 <TableCell scope="row" align="center" sx={TCellStyles}>
                   {moment(row.date).format("DD-MM-YYYY hh:mm A")}
                 </TableCell>
-                <TableCell align="center" sx={TCellStyles}>
+                <TableCell
+                  align="center"
+                  sx={{ ...TCellStyles, display: { xs: "none", sm: "block" } }}
+                >
                   {row.category}
                 </TableCell>
                 <TableCell align="center" sx={TCellStyles}>
                   {row.description}
+                  {isMobile ? (
+                    <p className="text-[10px] text-slate-800">
+                      Category:
+                      <span className="text-xs text-gray-900">
+                        {row.category}
+                      </span>
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </TableCell>
                 <TableCell
                   align="center"
@@ -103,7 +127,7 @@ const TransactionTable = ({ rows, theadStyles, txnsLen }) => {
           )}
         </TableBody>
       </Table>
-    </TableContainer>
+    // </TableContainer>
   );
 };
 

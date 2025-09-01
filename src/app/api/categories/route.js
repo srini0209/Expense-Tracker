@@ -47,14 +47,14 @@ export async function POST(request) {
 
   try {
     await connectDB();
+    let budget;
     const body = await request.json();
     const { type, name } = body;
-
-    const category = await CategoriesModel.create({
-      userId: userId,
-      type: type,
-      name: name,
-    });
+    const recordToCreate = { userId: userId, type: type, name: name };
+    if (body.budget && body.budget > 0) {
+      recordToCreate.budget = body.budget;
+    }
+    const category = await CategoriesModel.create(recordToCreate);
     return NextResponse.json(
       { message: "Category Created Successfully", category },
       { status: 201 }
