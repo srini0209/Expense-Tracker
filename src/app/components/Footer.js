@@ -23,7 +23,7 @@ const Footer = () => {
 //   console.log('End of the month:',endOfMonth);
   
   return (
-    <footer className="flex justify-center  bg-[#f5f5f5]">
+    <footer className="flex justify-center  bg-[#f5f5f5] bottom-0" >
       <div className="flex max-w-[960px] flex-1 flex-col">
         <footer className="flex flex-col gap-6 px-5 py-10 text-center @container">
           <div className="flex flex-wrap items-center justify-center gap-6 @[480px]:flex-row @[480px]:justify-around">

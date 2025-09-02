@@ -80,46 +80,16 @@ const Navbar = () => {
   return (
     <div className="flex flex-1 justify-end gap-8">
       <div className="flex items-center gap-9">
-        <Link
-          className={` ${
-            path == "/dashboard" ? "text-[#4caf50]" : "text-white"
-          } text-[0.875rem] font-medium leading-normal`}
-          href="/dashboard"
-        >
-          Dashboard
-        </Link>
-        <Link
-          className={`   text-[0.875rem] font-medium leading-normal ${
-            path == "/transactions" ? "text-[#4caf50]" : "text-white"
-          }`}
-          href="/transactions"
-        >
-          Transactions
-        </Link>
-        <Link
-          className={`${
-            path == "/categories" ? "text-[#4caf50]" : "text-white"
-          } text-[0.875rem] font-medium leading-normal`}
-          href="/categories"
-        >
-          Categories
-        </Link>
-        <Link
-          className="text-white text-[0.875rem] font-medium leading-normal"
-          href="/budgets"
-        >
-          Budgets
-        </Link>
-        <Link
-          className="text-white text-sm font-medium leading-normal"
-          href="#"
-        >
-          {/* <Image
+        <MenuLinks path={path} />
+        {/* <Image
             src={"/globe.svg" || user.profileImage}
             width={40}
             height={40}
             alt="Profile Picture"
-          /> */}
+          /> */}<Link
+          className="text-white text-sm font-medium leading-normal"
+          href="#"
+        >
           <SettingsOutlinedIcon sx={{ fontSize: 30 }} />
         </Link>
         <p
@@ -127,7 +97,7 @@ const Navbar = () => {
           onClick={() => {
             // clearUser();
             localStorage.removeItem("token");
-            document.cookie="token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
             router.push("/login");
           }}
         >
@@ -137,3 +107,38 @@ const Navbar = () => {
     </div>
   );
 };
+
+const MenuLinks = ({ path }) => {
+
+  return (
+    <>
+      <Link
+        className={` ${path == "/dashboard" ? "text-[#4caf50]" : "text-white"
+          } text-[0.875rem] font-medium leading-normal`}
+        href="/dashboard"
+      >
+        Dashboard
+      </Link>
+      <Link
+        className={`   text-[0.875rem] font-medium leading-normal ${path == "/transactions" ? "text-[#4caf50]" : "text-white"
+          }`}
+        href="/transactions"
+      >
+        Transactions
+      </Link>
+      <Link
+        className={`${path == "/categories" ? "text-[#4caf50]" : "text-white"
+          } text-[0.875rem] font-medium leading-normal`}
+        href="/categories"
+      >
+        Categories
+      </Link>
+      <Link
+        className="text-white text-[0.875rem] font-medium leading-normal"
+        href="/budgets"
+      >
+        Budgets
+      </Link>
+    </>
+  )
+}

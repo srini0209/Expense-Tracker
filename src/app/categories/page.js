@@ -5,8 +5,8 @@ import CategoriesPage from '../components/categories-page'
 const page = () => {
   return (
     <div>
-      <Categories />
-      {/* <CategoriesPage /> */}
+      {/* <Categories /> */}
+      <CategoriesPage />
     </div>
   )
 }

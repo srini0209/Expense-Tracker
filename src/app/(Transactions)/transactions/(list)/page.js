@@ -18,14 +18,14 @@ import {
   Button,
   colors,
 } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 import moment from "moment";
-import { FaEdit } from "react-icons/fa";
-import { FaRegEdit } from "react-icons/fa";
 import { CircularProgress, LinearProgress } from "@mui/joy";
 import TransactionTable from "../../../../app/components/TransactionTable";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ChevronRight,ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft, Search } from "lucide-react";
+import Input from "../../../components/Inputs/Input";
 
 const page = () => {
   const [txns, setTxns] = useState([]);
@@ -35,7 +35,7 @@ const page = () => {
   const [catOptions, setCatOptions] = useState([]);
   const [resLen, setResLen] = useState(0);
   const [txnsLen, setTxnsLen] = useState(0);
-
+  const [searchTerm, setsearchTerm] = useState('')
 
   // Date range
   const now = new Date();
@@ -95,7 +95,7 @@ const page = () => {
     }
   };
   useEffect(() => {
-    // console.log("Transactions Page mounted ");
+    console.log("Transactions updated ");
 
     fetchTransactions();
   }, [type, category, startDate, endDate]);
@@ -103,8 +103,8 @@ const page = () => {
   function createData(_id, date, category, description, amount, txnType) {
     return { _id, date, category, description, amount, txnType };
   }
-
-  const rows = txns.map((txn) =>
+  const filteredTransactions = txns.filter((txn) => txn?.description?.toLowerCase().includes(searchTerm.toLowerCase()));
+  const rows = filteredTransactions.map((txn) =>
     createData(
       txn._id,
       txn.date,
@@ -121,17 +121,18 @@ const page = () => {
     fontSize: 16,
   };
   return (
-    <div className="lg:w-[70%] md:w-[80%]  w-full px-10 mx-auto my-20">
-      <div className="flex flex-row text-black items-center justify-between mb-4">
-        <h2 className="text-3xl font-semibold ">Transactions</h2>
+    <div className="w-full my-20">
+      <div className="flex sm:flex-row flex-col gap-4 text-black sm:items-center sm:justify-between mb-4">
+        <h2 className="text-3xl font-semibold text-left block">Transactions</h2>
         <Link
           href={"/transactions/add"}
-          className="bg-blue-50 border-blue-200 border px-4 py-2 items-center rounded-lg font-medium text-blue-600 "
+          className="bg-blue-50 border-blue-200 border max-w-[200px] sm:w-auto text-center px-4 py-2 items-center rounded-lg font-medium text-blue-600 "
         >
           Add Transaction
         </Link>
       </div>
-      <div className="flex flex-row justify-baseline gap-3 items-center mb-4">
+
+      <div className="flex md:flex-row flex-col justify-baseline gap-3 items-center mb-4">
         <div className="flex flex-row gap-4">
           <p
             className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
@@ -144,7 +145,7 @@ const page = () => {
               setEndDate(newendDate);
             }}
           >
-          <ChevronLeft /> Previous Month
+            <ChevronLeft /> Previous Month
           </p>
           <p
             className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
@@ -214,6 +215,7 @@ const page = () => {
         >
           Clear filter
         </Button>
+        <Input type='text' prefix={<SearchIcon />} value={searchTerm} onChange={(e) => setsearchTerm(e.target.value)} placeholder="Search" />
       </div>
       <TransactionTable rows={rows} txnsLen={txnsLen} theadStyles={theadStyles} />
     </div>

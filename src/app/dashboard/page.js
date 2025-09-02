@@ -37,12 +37,12 @@ const page = () => {
   // Getting current month's all Transactions
   // const [allTxns, setAllTxns] = useState([]);
 
-  // const [totalIncome, setTotalIncome] = useState(0);
-  // const [totalExpense, setTotalExpense] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
   const [analyData, setAnalyData] = useState([]);
   // const [balance, setBalance] = useState(0);
-  const [exCatData, setExCatData] = useState([]);
-  const [incCatData, setIncCatData] = useState([]);
+  // const [exCatData, setExCatData] = useState([]);
+  // const [incCatData, setIncCatData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [txnsLen, setTxnsLen] = useState(0);
   // Date range
@@ -68,9 +68,9 @@ const page = () => {
       }
       setTxnsLen(response.data.txns?.length);
       setAnalyData(response.data.analyticsData);
-      const income = response.data.analyticsData[0]?.totalAmount;
-      const expense = response.data.analyticsData[1]?.totalAmount;
-      const bal = income - expense;
+      // const income = response.data.analyticsData[0]?.totalAmount;
+      // const expense = response.data.analyticsData[1]?.totalAmount;
+      // const bal = income - expense;
 
       // setTotalIncome(income);
       // setTotalExpense(expense);
@@ -103,11 +103,21 @@ const page = () => {
     // console.log("Transactions Page mounted ");
 
     fetchRecentTransactions();
-    // fettchAllTransactions();
   }, []);
-
+  const totInc = () => {
+    const found = analyData?.find(item => item.txnType === 'Income');
+    return found ? found.totalAmount : 0;
+  }
+  const totExp = () => {
+    const found = analyData?.find(item => item.txnType === 'Expense');
+    return found ? found.totalAmount : 0;
+  }
   useEffect(() => {
     console.log("AnalyData updated:", analyData);
+
+    setTotalIncome(totInc());
+    setTotalExpense(totExp());
+
   }, [analyData]);
   // console.log("dashboard All Txns:", allTxns);
   // Calculating category wise total amount spent current month
@@ -166,9 +176,8 @@ const page = () => {
               >
                 <div className="flex flex-row items-center gap-3">
                   <div
-                    className={`px-3 py-2 rounded-lg ${
-                      data.txnType === "Income" ? "bg-green-100" : "bg-red-100"
-                    }`}
+                    className={`px-3 py-2 rounded-lg ${data.txnType === "Income" ? "bg-green-100" : "bg-red-100"
+                      }`}
                   >
                     {data.txnType === "Income" ? (
                       <BarChartIcon className=" text-green-500" />
@@ -182,7 +191,7 @@ const page = () => {
                     </p>
                   </div>
                 </div>
-                <PieActiveArc data={analyData} type={data.txnType} />
+                <PieActiveArc data={analyData} type={data.txnType} totalIncome={totalIncome} totalExpense={totalExpense} />
               </div>
             ))}
 
@@ -196,7 +205,13 @@ const page = () => {
                     Total Income
                   </p>
                   <h3 className="text-xl font-bold text-left text-green-500">
-                    ₹ {analyData[0]?.totalAmount}
+                    ₹ {/* ₹ {
+                      (() => {
+                        const found = analyData?.find(item => item.txnType === 'Income');
+                        return found ? ` ${found.totalAmount}` : " 0";
+                      })() }*/
+                      totalIncome.toLocaleString()
+                    }
                   </h3>
                 </div>
               </div>
@@ -209,7 +224,13 @@ const page = () => {
                     Total Expense
                   </p>
                   <h3 className="text-xl font-bold text-left text-red-500">
-                    ₹ {analyData[1]?.totalAmount}
+                    ₹ {
+                      // (() => {
+                      //   const found = analyData?.find(item => item.txnType === 'Income');
+                      //   return found ? ` ${found.totalAmount}` : " 0";
+                      // })() 
+                      totalExpense.toLocaleString()
+                    }
                   </h3>
                 </div>
               </div>
@@ -222,13 +243,31 @@ const page = () => {
                     Balance
                   </p>
                   <h3 className="text-xl font-bold text-left text-blue-500">
-                    ₹ {analyData[0]?.totalAmount - analyData[1]?.totalAmount}
+                    ₹ {(totalIncome - totalExpense).toLocaleString()}
                   </h3>
                 </div>
               </div>
             </div>
           </div>
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-5 text-right">
+            <h2 className="text-left text-2xl mb-3 sm:mb-0 font-semibold text-blue-600">Recent Transactions</h2>
+            <div className="
+            flex gap-4 justify-between sm:justify-end w-full sm:w-auto">
 
+              <Link
+                className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 text-sm rounded-md font-medium"
+                href={"/transactions/add"}
+              >
+                Add Transaction
+              </Link>
+              <Link
+                href={"/transactions"}
+                className="bg-cyan-100 border border-cyan-200 text-cyan-500 text-[16px] font-medium rounded-lg px-3 py-2"
+              >
+                See All Transactions
+              </Link>
+            </div>
+          </div>
           <div className="mb-5">
             <TransactionTable
               rows={rows}
@@ -236,14 +275,7 @@ const page = () => {
               theadStyles={theadStyles}
             />
           </div>
-          <div className="justify-end text-right">
-            <Link
-              href={"/transactions"}
-              className="bg-cyan-100 border border-cyan-200 text-cyan-500 text-[16px] font-medium rounded-lg px-3 py-2"
-            >
-              See All Transactions
-            </Link>
-          </div>
+
         </>
       ) : (
         <>
@@ -256,7 +288,7 @@ const page = () => {
                 href={"/transactions/add"}
               >
                 Add
-              </Link>{" "}
+              </Link>
             </p>
           </div>
         </>

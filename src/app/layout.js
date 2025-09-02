@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
             {/* <MuiThemeProvider> */}
             <UserProvider>
               <Header />
-              <div className=" sm:w-[90%] md:w-[80%] lg:w-[75%] mx-auto">
+              <div className=" sm:w-[90%] md:w-[80%] lg:w-[75%] w-full px-3 mx-auto">
                 {children}
               </div>
               <Footer />

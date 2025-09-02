@@ -158,3 +158,10 @@ input[type="number"] {
 .input-box {
   @apply w-full flex justify-between gap-3 text-sm text-black bg-slate-100/50 rounded px-4 py-3 mb-4 mt-3 border-slate-300 outline-none;
 }
+
+.txn-table-head{
+  @apply text-violet-700 text-[16px] font-semibold py-5;
+}
+.txn-table-cell{
+  @apply text-slate-800 text-sm text-center font-normal py-5 ;
+}
