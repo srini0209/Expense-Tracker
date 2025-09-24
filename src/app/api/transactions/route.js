@@ -59,7 +59,7 @@ export async function GET(request, { params }) {
     const endDate = searchParams.get("endDate");
     if (type) filter.txnType = type;
     if (category) filter.category = category;
-    filter.date = { $gte: startDate, $lt: endDate };
+    filter.date = { $gte: startDate, $lte: endDate };
 
     await connectDB();
     // request.user = await userModel.findById(userId).select("-password");

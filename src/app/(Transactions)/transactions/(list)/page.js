@@ -17,6 +17,7 @@ import {
   InputLabel,
   Button,
   colors,
+  Tooltip, useMediaQuery
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import moment from "moment";
@@ -24,8 +25,15 @@ import { CircularProgress, LinearProgress } from "@mui/joy";
 import TransactionTable from "../../../../app/components/TransactionTable";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ChevronRight, ChevronLeft, Search } from "lucide-react";
+import { ChevronRight, ChevronLeft, Search, BrushCleaning, Plus } from "lucide-react";
 import Input from "../../../components/Inputs/Input";
+import Modal from "../../../components/Modal";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import TransactionForm from "../../../components/TransactionForm";
+import TransactionModal from "../../../components/TransactionModal";
+
 
 const page = () => {
   const [txns, setTxns] = useState([]);
@@ -37,25 +45,28 @@ const page = () => {
   const [txnsLen, setTxnsLen] = useState(0);
   const [searchTerm, setsearchTerm] = useState('')
 
+  // Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editTxnID, setEditTxnID] = useState("");
+  const [modalType, setModalType] = useState("");
+
   // Date range
   const now = new Date();
   const [startDate, setStartDate] = useState(
     new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1))
   );
   const [endDate, setEndDate] = useState(
-    new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1))
+    new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0))
   );
-  console.log("Transaction/list/page.js Months");
-  console.log("now:", now);
-  console.log("Start of the month:", startDate.toISOString());
-  console.log("End of the month:", endDate.toISOString());
+
   const router = useRouter();
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   // Fetching Categories based on Transaction type
   const fetchCategories = async (type) => {
     try {
-      const response = await axiosInstance.get(`/api/categories/type/${type}`);
-      console.log("/api/categories/type/[type] response", response.data);
+      const response = type.length > 0 && await axiosInstance.get(`/api/categories/type/${type}`);
+      console.log("/api/categories/type/[type] category fetched response", response.data);
       setResLen(response.data.length);
       if (response.data.length > 0) {
         setCatOptions(response.data);
@@ -98,8 +109,18 @@ const page = () => {
     console.log("Transactions updated ");
 
     fetchTransactions();
-  }, [type, category, startDate, endDate]);
+  }, [type, category, startDate, endDate, isModalOpen]);
 
+  const resetFilters = () => {
+    setType("");
+    setCategory("");
+    setStartDate(
+      new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1))
+    )
+    setEndDate(
+      new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0))
+    )
+  }
   function createData(_id, date, category, description, amount, txnType) {
     return { _id, date, category, description, amount, txnType };
   }
@@ -121,103 +142,209 @@ const page = () => {
     fontSize: 16,
   };
   return (
-    <div className="w-full my-20">
-      <div className="flex sm:flex-row flex-col gap-4 text-black sm:items-center sm:justify-between mb-4">
+    <div className="w-full my-10">
+      <div className="flex sm:flex-row flex-col gap-4 text-blue-500 sm:items-center sm:justify-between mb-8">
         <h2 className="text-3xl font-semibold text-left block">Transactions</h2>
-        <Link
-          href={"/transactions/add"}
-          className="bg-blue-50 border-blue-200 border max-w-[200px] sm:w-auto text-center px-4 py-2 items-center rounded-lg font-medium text-blue-600 "
-        >
-          Add Transaction
-        </Link>
+        <button
+          onClick={() => {
+            setIsModalOpen(true);
+            setModalType('add');
+          }}
+          className="px-3 py-2 bg-linear-to-br from-indigo-500 to-blue-500 shadow-lg cursor-pointer rounded-lg text-white font-semibold flex gap-2 items-center"     >
+          <Plus /><span>
+
+            Add Transaction
+          </span>
+        </button>
       </div>
 
-      <div className="flex md:flex-row flex-col justify-baseline gap-3 items-center mb-4">
-        <div className="flex flex-row gap-4">
-          <p
-            className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
-            onClick={() => {
-              let newstartDate = new Date(startDate);
-              let newendDate = new Date(endDate);
-              newstartDate.setMonth(newstartDate.getMonth() - 1);
-              newendDate.setMonth(newendDate.getMonth() - 1);
-              setStartDate(newstartDate);
-              setEndDate(newendDate);
-            }}
-          >
-            <ChevronLeft /> Previous Month
-          </p>
-          <p
-            className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
-            onClick={() => {
-              let newstartDate = new Date(startDate);
-              let newendDate = new Date(endDate);
-              newstartDate.setMonth(startDate.getMonth() + 1);
-              newendDate.setMonth(endDate.getMonth() + 1);
-              setStartDate(newstartDate);
-              setEndDate(newendDate);
-            }}
-          >
-            Next Month <ChevronRight />
-          </p>
-        </div>
-        <div className="flex flex-col gap-2 w-[180px]">
-          <FormControl fullWidth>
-            {/* <label className="text-slate-800 text-[13px] font-medium" htmlFor="Txn-type-selector">Transaction Type</label> */}
-            <InputLabel id="Txn-type-selector-label">
-              Transaction Type
-            </InputLabel>
-            <Select
-              labelId="Txn-type-selector-label"
-              id="Txn-type"
-              value={type}
-              // sx={{paddingBottom:'5px', paddingTop:'5px'}}
-              label="Transaction Type"
-              onChange={(e) => {
-                setType(e.target.value);
-                setCategory("");
-              }}
-            >
-              <MenuItem key={"Expense"} value="Expense">
-                Expense
-              </MenuItem>
-              <MenuItem key={"Income"} value="Income">
-                Income
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-        <div className="flex flex-col gap-2 w-[180px]">
-          <FormControl fullWidth>
-            <InputLabel id="category-selector-label">Category</InputLabel>
+      {/* Filters */}
+      <div className="flex xl:flex-row flex-col justify-between items-center w-full gap-4 mb-4">
+        <div className="flex lg:flex-row flex-col justify-baseline gap-3 items-center w-full ">
 
-            <Select
-              labelId="category-selector"
-              id="category-selector"
-              value={category}
-              label="Select Category"
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              {catOptions.map((catOption, index) => (
-                <MenuItem key={catOption._id} value={catOption.name}>
-                  {catOption.name}
+          {/* Date Range filter */}
+          <div className="flex gap-2 justify-between items-center lg:w-auto w-full ">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker sx={{
+                '& .MuiPickersSectionList-root': {
+                  paddingY: '8.5px'
+                }, width: '180px',
+                fontSize: '12px'
+              }}
+                label="Start Date"
+                value={dayjs(startDate)}
+                onChange={(newValue) => {
+                  setStartDate(new Date(newValue));
+                }}
+                format="DD/MM/YYYY"
+                defaultValue={{}}
+
+              />
+              <DatePicker
+                sx={{
+                  '& .MuiPickersSectionList-root': {
+                    paddingY: '8.5px'
+                  }, width: '180px',
+                  fontSize: '12px'
+                }}
+                label="End Date"
+                value={dayjs(endDate)}
+                onChange={(newValue) => {
+                  setEndDate(new Date(newValue));
+                }}
+                format="DD/MM/YYYY"
+                defaultValue={{}}
+
+              />
+            </LocalizationProvider>
+          </div>
+
+          {/* Transaction Type and Category filter */}
+          <div className="flex  gap-2 justify-between items-center lg:w-auto w-full ">
+            {/* Transaction Type */}
+            <FormControl fullWidth size="small" sx={{ width: '180px' }}>
+
+              <InputLabel id="Txn-type-selector-label">
+                Transaction Type
+              </InputLabel>
+              <Select
+                labelId="Txn-type-selector-label"
+                id="Txn-type"
+                value={type}
+
+
+                // sx={{
+                //   '& .MuiSelect-select': {
+                //     paddingTop:'4px',
+                //     paddingBottom:'4px'
+                //   }
+                // }}
+                label="Transaction Type"
+                onChange={(e) => {
+                  setType(e.target.value);
+                  setCategory("");
+                }}
+              >
+                <MenuItem key={"Expense"} value="Expense">
+                  Expense
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                <MenuItem key={"Income"} value="Income">
+                  Income
+                </MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Category */}
+            <FormControl fullWidth size="small" sx={{ width: '180px' }}>
+              <InputLabel id="category-selector-label">Category</InputLabel>
+
+              <Select
+                labelId="category-selector-label"
+                id="category-selector"
+                value={category}
+                label="Select Category"
+                onChange={(e) => setCategory(e.target.value)}
+
+              >
+                {catOptions.map((catOption, index) => (
+                  <MenuItem key={catOption._id} value={catOption.name}>
+                    {catOption.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+
+          {/* Clear filter */}
+          <button
+            onClick={() => resetFilters()}
+            className=" flex items-center gap-2 text-white bg-error-500 hover:bg-error-600 border cursor-pointer hover rounded-lg text-sm px-3 py-2"
+          >
+            <BrushCleaning className="text-white text-sm" />
+            <span>Clear Filters</span>
+
+          </button>
         </div>
-        <Button
+
+        <div className="lg:w-auto w-full justify-items-center sm:justify-items-end">
+          <div className="flex items-center w-full sm:w-auto gap-2 border border-gray-200 hover:focus:border-gray-400 p-2 rounded-lg">
+            <SearchIcon className="text-gray-500" />
+            <input type='text' value={searchTerm} onChange={(e) => setsearchTerm(e.target.value)} placeholder="Search" className="focus:border-none w-full" />
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-row justify-between items-center gap-4 mb-5">
+        <p
+          className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
           onClick={() => {
-            setType("");
-            setCategory("");
+            let newstartDate = new Date(startDate);
+            let newendDate = new Date(endDate);
+            newstartDate.setMonth(newstartDate.getMonth() - 1);
+            newendDate.setMonth(newendDate.getMonth() - 1);
+            setStartDate(newstartDate);
+            setEndDate(newendDate);
           }}
-          variant="outlined"
         >
-          Clear filter
-        </Button>
-        <Input type='text' prefix={<SearchIcon />} value={searchTerm} onChange={(e) => setsearchTerm(e.target.value)} placeholder="Search" />
+          <ChevronLeft />Previous {!isMobile ? "Month" : ""}
+        </p>
+
+        {/* Showing Month */}
+        {
+          startDate.getMonth() === endDate.getMonth() ? (
+            startDate.getMonth() === now.getMonth() &&
+              startDate.getFullYear() === now.getFullYear() ? (
+              <p className="text-xs md:text-[14px]  font-medium text-slate-800">
+                {moment(startDate).format("MMM YYYY")} (Current Month)
+              </p>
+            ) : (
+              <p
+                className="text-xs md:text-[14px] font-medium text-slate-800 cursor-pointer"
+                onClick={() => {
+                  setStartDate(
+                    new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1))
+                  );
+                  setEndDate(
+                    new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0))
+                  );
+                }}
+              ><Tooltip title="Go to Current Month">
+
+                  {moment(startDate).format("MMM YYYY")}
+                </Tooltip>
+              </p>
+            )) :
+            (<p className="text-xs md:text-[14px] font-medium text-slate-800 cursor-pointer">
+              {moment(startDate).format("MMM YYYY")} - {moment(endDate).format("MMM YYYY")}
+            </p>)}
+
+        <p
+          className="text-sm p-2 text-amber-500 cursor-pointer flex items-center"
+          onClick={() => {
+            let newstartDate = new Date(startDate);
+            let newendDate = new Date(endDate);
+            newstartDate.setMonth(startDate.getMonth() + 1);
+            newendDate.setMonth(endDate.getMonth() + 1);
+            setStartDate(newstartDate);
+            setEndDate(newendDate);
+          }}
+        >
+          Next {!isMobile ? "Month" : ""}  <ChevronRight />
+        </p>
       </div>
       <TransactionTable rows={rows} txnsLen={txnsLen} theadStyles={theadStyles} />
+
+      {/* Add Transaction Modal */}
+      {/* <Modal
+        isOpen={isModalOpen}
+        title={`${modalType === 'add' ? 'Add' : 'Edit'} Transaction`}
+        onClose={() => setIsModalOpen(false)}
+      >
+        {modalType === 'add' ? <TransactionForm /> : <TransactionForm
+          initialData={txns.find((item) => item._id === editTxnID)}
+        />}
+      </Modal> */}
+      <TransactionModal isModalOpen={isModalOpen} modalType={modalType} editTxnID={editTxnID} Txns={txns} setIsModalOpen={setIsModalOpen} />
+
     </div>
   );
 };

@@ -32,17 +32,22 @@ export default function PieActiveArc({
   console.log("PieChart Data from dashboard:", data);
   console.log("PieChart Data:", inputData);
   return (
-    <PieChart
-      series={[
-        {
-          data: inputData,
-          highlightedItem: { faded: "global", highlighted: "item" },
-          // innerRadius:60,
-          valueFormatter,
-        },
-      ]}
-      height={200}
-      width={200}
-    />
+    // <div style={{position:'relative', zIndex:10}}>
+
+      <PieChart
+        series={[
+          {
+            data: inputData,
+            highlightedScope: { faded: "global", highlighted: "item" },
+            // innerRadius:60,
+            valueFormatter,
+          },
+        ]}
+        sx={{position:'relative',zIndex:10}}
+        height={200}
+        width={200}
+      />
+      
+    // </div>
   );
 }

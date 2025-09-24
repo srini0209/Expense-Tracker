@@ -6,16 +6,9 @@ export async function middleware(request) {
   const token = request.cookies.get("AuthToken")?.value;
 
   console.log("middleware Token", token);
-  // console.log("middle ware request:", request);
   if (!token) {
-    // return NextResponse.json(
-    //   { message: "Not Authorized, No Token" },
-    //   { status: 401 }
-    // );
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  // const token = authHeader.split(" ")[1];
-  // console.log("token", token);
   let userId;
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

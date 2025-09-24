@@ -35,15 +35,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={beVietnamPro.variable}>
       <body className={`${beVietnamPro.className} antialiased bg-[#f5f5f5]`}>
-        <div className="relative flex size-full min-h-screen flex-col bg-[#f5f5f5] group/design-root overflow-x-hidden">
+      {/* <body className={`${beVietnamPro.className} antialiased bg-gradient-to-br from-[#f5f9ff] via-[#e2eaff] to-[#e7eeff]  `}> */}
+      {/* <body className={`${beVietnamPro.className} antialiased bg-gradient-to-br 
+            from-[#2b2d42] via-[#3a3f5c] to-[#4b557a]  !text-[#f5f5f5] `}> */}
+        <div className="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden">
           <div className="layout-container flex h-full grow flex-col">
             {/* <MuiThemeProvider> */}
             <UserProvider>
               <Header />
-              <div className=" sm:w-[90%] md:w-[80%] lg:w-[75%] w-full px-3 mx-auto">
+              <div className=" sm:w-[90%] md:w-[80%] lg:w-[1000px] xl:w-[1200px] w-full px-3 mx-auto h-full grow">
                 {children}
               </div>
-              <Footer />
+              {/* <Footer /> */}
               <Toaster
                 toastOptions={{
                   className: "",

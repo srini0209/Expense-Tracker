@@ -13,7 +13,7 @@ const Input = ({ value, onChange, label, placeholder, type, prefix, options }) =
             <label className="text-[13px] text-slate-800">
                 {label}
             </label>
-            <div className="input-box">
+            <div className="input-box ">
                 {prefix && (<span>{prefix}</span>)}
                 <input
                     type={

@@ -16,7 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import axiosInstance from "../../../axiosInstance.js";
 import toast from "react-hot-toast";
-import TransactionForm from "../TransactionForm.js";
+import TransactionForm from "../../../components/TransactionForm.js";
 
 const page = () => {
 

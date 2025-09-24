@@ -10,10 +10,9 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import mongoose from "mongoose";
 import TransactionsModel from "./models/TransactionsModel.js";
-import connectDB from "./utils/dbConnect.js";
-import dotenv from "dotenv";
+import CategoriesModel from "./models/CategoriesModel.js";
 
-dotenv.config();
+// This is a dummy comment to force a file change and potentially trigger MCP server restart.
 // Create MCP Server instance
 const server = new Server(
   {
@@ -84,6 +83,44 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           required: ["amount", "txnType", "category", "description"],
         },
       },
+      {
+        name: "getAllCategories",
+        description: "Fetch all categories from the database",
+        inputSchema: {
+          type: "object",
+          properties: {
+            category: {
+              type: "string",
+              description: "Name of the Category",
+            },
+            categoryType: {
+              type: "string",
+              description: "Type of Category i.e Income or Expense",
+            },
+          }
+        }
+      },
+      {
+        name: "addCategory",
+        description: "Add a new category to the database",
+        inputSchema: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "Name of the Category",
+            },
+            type: {
+              type: 'string',
+              description: 'Type of Category i.e Income or Expense'
+            },
+            budget: {
+              type: 'number',
+              description: 'Budget of the Expense Category(Optional)'
+            }
+          }
+        }
+      }
     ],
   };
 });
@@ -93,21 +130,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
-    // Ensure database connection
-    await connectDB();
+    const mongoUri = "mongodb+srv://srini0610:1yzzsRIurS7MmGkg@cluster0.feqcy.mongodb.net/Expense-Tracker?retryWrites=true&w=majority&appName=Cluster0";
+    console.error("Attempting to connect to MongoDB with URI:", mongoUri); // Log the URI before connecting
+    await mongoose.connect(mongoUri);
 
     switch (name) {
-      case "getAllExpenses": {
-        const { limit = 100, sortBy = "date", sortOrder = "desc" } = args || {};
-        const sortDirection = sortOrder === "desc" ? -1 : 1;
-        let query = TransactionsModel.find(
+      case "getAllTransactions": {
+        // const { limit = 100, sortBy = "date", sortOrder = "desc" } = args || {};
+        // const sortDirection = sortOrder === "desc" ? -1 : 1;
+        let expenses = await TransactionsModel.find(
           {},
           { txnType: 1, amount: 1, Category: 1, description: 1, date: 1 }
         ).sort({ date: -1 });
-        if (limit) {
-          query = query.limit(limit);
-        }
-        const expenses = await query.exec();
+   
+        //
+        // if (limit) {
+        //   query = query.limit(limit);
+        // }
+        // const expenses = await query.exec();
         return {
           content: [
             {
@@ -126,7 +166,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         };
       }
 
-      case "addExpense": {
+      case "addTransaction": {
         const { amount, txnType, category, description, date } = args;
 
         if (!amount || !category || !description) {
@@ -164,6 +204,56 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           ],
         };
       }
+      case "getAllCategories": {
+        const response = await CategoriesModel.find().select("_id name type budget");
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: "Categories fetched successfully",
+                  categories: response,
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+      case "addCategory": {
+        const { name, type, budget } = args;
+        if (!name || !type) {
+          throw new McpError(
+            ErrorCode.InvalidParams,
+            "Missing required fields: name and type are required"
+          );
+        }
+        const newCategory = new CategoriesModel({
+          name,
+          type,
+          budget,
+        });
+        const savedCategory = await newCategory.save();
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: "Category added successfully",
+                  category: savedCategory,
+                },
+                null,
+                2
+              ),
+            }]
+        }
+      }
+
 
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);

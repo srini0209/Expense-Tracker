@@ -8,7 +8,12 @@ import axiosInstance from "../axiosInstance.js";
 import { useRouter } from "next/navigation.js";
 import toast from "react-hot-toast";
 
-const CategoriesForm = ({ initialData = {} }) => {
+const CategoriesForm = ({
+  initialData = {},
+  fetchCategories,
+  setIsModalOpen,
+  fetchData,
+}) => {
   const [type, setType] = useState(initialData?.type || "Expense");
   const [name, setName] = useState(initialData?.name || "");
   const [budget, setBudget] = useState(initialData?.budget || 0);
@@ -39,14 +44,21 @@ const CategoriesForm = ({ initialData = {} }) => {
         );
 
         console.log("Category updated Successfully- updated Category:", res);
+        setIsModalOpen(false);
+        fetchCategories();
+        fetchData();
         toast.success("Category Updated");
       } else {
         const res = await axiosInstance.post(`/api/categories/`, data);
         console.log("Category Created Successfully- Created Category:", res);
+        setIsModalOpen(false);
+        fetchCategories();
+        fetchData();
         toast.success("Category Created");
       }
     } catch (error) {
       console.log("error on Editing or creating Category:", error.message);
+      toast.success("Error on Editing or creating Category");
     } finally {
       router.push("/categories");
     }
@@ -58,17 +70,21 @@ const CategoriesForm = ({ initialData = {} }) => {
       const res = await axiosInstance.delete(`/api/categories/${id}`);
       console.log("Deleted successfully -id:", id);
       console.log("Deleted successfully res:", res);
+      setIsModalOpen(false);
+      fetchCategories();
       toast.success("Category Deleted");
     } catch (error) {
       console.log("Error deleting Category", error);
+      toast.success("Error deleting Category");
     } finally {
       router.push("/categories");
     }
   };
   return (
-    <Form className="md:w-[60%] w-full">
+    <Form className="mx-0">
       <RadioGroup
-        title={"Transaction Type"}
+        // title={"Transaction Type"}
+        className="w-full"
         value={type}
         onChange={(e) => setType(e.target.value)}
         values={["Expense", "Income"]}

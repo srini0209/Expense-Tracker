@@ -18,10 +18,15 @@ import TransactionTable from "../components/TransactionTable";
 import Link from "next/link";
 import PieActiveArc from "../components/CategoriesChart";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import { ChartPie, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, ChartPie, Plus, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import Modal from "../components/Modal";
+import TransactionForm from "../components/TransactionForm";
+import { set } from "mongoose";
+import TransactionModal from "../components/TransactionModal";
 
 const page = () => {
-  // const { user, loading, error } = useContext(UserContext);
+  const { user, userloading, error } = useContext(UserContext);
+  console.log('context user:', user)
   // const [date, setDate] = useState(dayjs());
   // const handleDateChange = (newValue) => {
   //   setDate(newValue.toISOString());
@@ -45,6 +50,12 @@ const page = () => {
   // const [incCatData, setIncCatData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [txnsLen, setTxnsLen] = useState(0);
+
+  // Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editTxnID, setEditTxnID] = useState("");
+  const [modalType, setModalType] = useState("");
+
   // Date range
   const now = new Date();
   const [startDate, setStartDate] = useState(
@@ -53,6 +64,7 @@ const page = () => {
   const [endDate, setEndDate] = useState(
     new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 1)).toISOString()
   );
+
   // Fetching recent (10) Transactions
   const fetchRecentTransactions = async () => {
     try {
@@ -103,7 +115,7 @@ const page = () => {
     // console.log("Transactions Page mounted ");
 
     fetchRecentTransactions();
-  }, []);
+  }, [isModalOpen]);
   const totInc = () => {
     const found = analyData?.find(item => item.txnType === 'Income');
     return found ? found.totalAmount : 0;
@@ -150,6 +162,7 @@ const page = () => {
   };
   return (
     <div className="text-black text-center w-full  mx-auto text-2xl my-5">
+      <h2 className="capitalize text-left mb-5 font-semibold text-blue-500 ">Welcome back, {user.name}!</h2>
       {/* <p className="text-slate-800 text-[13px]">{JSON.stringify(user)}</p>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimePicker
@@ -166,7 +179,7 @@ const page = () => {
         <div>Loading...</div>
       ) : txnsLen > 0 ? (
         <>
-          <div className="flex flex-col md:flex-row mx-auto gap-8 lg:flex-nowrap flex-wrap justify-between mb-10">
+          <div className="flex flex-col md:flex-row mx-auto gap-8 lg:flex-nowrap flex-wrap justify-between mb-10 z-10!">
             {analyData.map((data) => (
               <div
                 key={data.txnType}
@@ -254,17 +267,24 @@ const page = () => {
             <div className="
             flex gap-4 justify-between sm:justify-end w-full sm:w-auto">
 
-              <Link
-                className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 text-sm rounded-md font-medium"
-                href={"/transactions/add"}
-              >
-                Add Transaction
-              </Link>
+              <button
+                className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 flex items-center gap-1.5 text-sm rounded-md font-medium cursor-pointer"
+                onClick={()=>{
+                  setIsModalOpen(true);
+                  setModalType('add');
+                
+                }}
+              ><Plus />
+                <span>
+                  Add Transaction
+                </span>
+              </button>
               <Link
                 href={"/transactions"}
-                className="bg-cyan-100 border border-cyan-200 text-cyan-500 text-[16px] font-medium rounded-lg px-3 py-2"
+                className="bg-cyan-100 border border-cyan-200 text-cyan-500 text-sm font-medium rounded-lg px-3 py-2 flex items-center gap-1.5"
               >
-                See All Transactions
+                <span>All Transactions
+                </span>  <ArrowRight />
               </Link>
             </div>
           </div>
@@ -293,6 +313,18 @@ const page = () => {
           </div>
         </>
       )}
+
+      {/* Add Transaction Modal
+      <Modal
+        isOpen={isModalOpen}
+        title={`${modalType === 'add' ? 'Add' : 'Edit'} Transaction`}
+        onClose={() => setIsModalOpen(false)}       
+      >
+        {modalType === 'add' ? <TransactionForm /> : <TransactionForm
+          initialData={recentTxns.find((item) => item._id === editTxnID)}
+        />}
+      </Modal> */}
+      <TransactionModal isModalOpen={isModalOpen} modalType={modalType} editTxnID={editTxnID} Txns={recentTxns} setIsModalOpen={setIsModalOpen} />
     </div>
   );
 };

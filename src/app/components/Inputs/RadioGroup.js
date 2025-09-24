@@ -2,14 +2,15 @@
 import * as React from 'react';
 import { Box, FormLabel, Radio, RadioGroup, Sheet } from '@mui/joy';
 import { deepOrange, green } from '@mui/material/colors';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 
 export default function IconlessRadioGroup({ title, values, value, onChange }) {
     return (
-        <Box sx={{ width: 500, marginBottom: 3 }}>
+        <Box sx={{ width:'100%', marginBottom: 2 }}>
             <FormLabel
                 id="radio-group-label"
                 sx={{
-                    mb: 2,
+                    mb: 1,
                     fontWeight: 'xl',
                     fontSize: 'xs',
                     letterSpacing: '0.15rem',
@@ -25,11 +26,14 @@ export default function IconlessRadioGroup({ title, values, value, onChange }) {
                 orientation='horizontal'
                 value={value}
                 onChange={onChange}
-                sx={{ gap: 1.5, width: 500 }}
+                sx={{ gap: 1.5, width: '100%' }}
             >
                 {values.map((value) => (
-                    <Sheet key={value} sx={{ p: 2, width: 200, borderRadius: 'md', boxShadow: 'sm' }}>
-                        <Radio
+                    <Sheet key={value} sx={{ p: 1.5, width: '50%', borderRadius: 'md', boxShadow: 'sm' }}>
+                        {/* {value === 'Expense' ? <TrendingDown className='checked:text-[#ff5722]'/> :
+
+                            <TrendingUp className='checked:text-[#00e676]'/>} */}
+                            <Radio
                             label={value}
                             overlay
                             disableIcon
