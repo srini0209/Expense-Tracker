@@ -20,7 +20,7 @@ export async function GET(request) {
 
   try {
     await connectDB();
-    const categories = await CategoriesModel.find({ userId: userId });
+    const categories = await CategoriesModel.find({ userId: userId }).lean();
     if (categories) {
       return NextResponse.json(categories);
     }
@@ -50,10 +50,18 @@ export async function POST(request) {
     let budget;
     const body = await request.json();
     const { type, name } = body;
-    const recordToCreate = { userId: userId, type: type, name: name };
+    const recordToCreate = { userId: userId, type: type, name: name.trim().toLowerCase() };
     if (body.budget && body.budget > 0) {
       recordToCreate.budget = body.budget;
     }
+    const exists = await CategoriesModel.findOne({ userId: userId, type: type, name: name.trim().toLowerCase() });
+    if (exists) {
+      return NextResponse.json(
+        { message: "Category Already Exists" },
+        { status: 400 }
+      );
+    }
+
     const category = await CategoriesModel.create(recordToCreate);
     return NextResponse.json(
       { message: "Category Created Successfully", category },

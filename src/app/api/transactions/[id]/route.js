@@ -6,7 +6,7 @@ export async function GET(request, { params }) {
   const { id } = await params;
   try {
     await connectDB();
-    const txn = await TransactionsModel.findById(id);
+    const txn = await TransactionsModel.findById(id).lean();
     return NextResponse.json(txn);
   } catch (error) {
     return NextResponse.json({
@@ -38,7 +38,7 @@ export async function DELETE(request, { params }) {
   try {
     await connectDB();
     // const data = await request.json();
-    const txn = await TransactionsModel.findByIdAndDelete(id);
+    const txn = await TransactionsModel.findByIdAndDelete(id).lean();
     return NextResponse.json(txn);
   } catch (error) {
     return NextResponse.json({

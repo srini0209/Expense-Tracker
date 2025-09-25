@@ -35,6 +35,8 @@ const CategoriesForm = ({
       setError("Name is required");
       return;
     }
+    setError("");
+
 
     try {
       if (isEditing) {
@@ -57,8 +59,13 @@ const CategoriesForm = ({
         toast.success("Category Created");
       }
     } catch (error) {
+      setError(error?.response?.data?.message);
       console.log("error on Editing or creating Category:", error.message);
-      toast.success("Error on Editing or creating Category");
+      toast.success(
+        error?.response?.data?.message
+          ? error?.response?.data?.message
+          : "Error on Editing or creating Category"
+      );
     } finally {
       router.push("/categories");
     }

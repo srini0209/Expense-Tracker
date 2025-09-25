@@ -44,6 +44,7 @@ const Page = () => {
   const [resLen, setResLen] = useState(0);
   const [txnsLen, setTxnsLen] = useState(0);
   const [searchTerm, setsearchTerm] = useState('')
+  const [loading, setLoading] = useState(false);
 
   // Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,6 +83,7 @@ const Page = () => {
   // Fetching Transactions
   const fetchTransactions = async () => {
     try {
+      setLoading(true);
       const params = {};
       if (type) params.type = type;
       if (category) params.category = category;
@@ -101,15 +103,17 @@ const Page = () => {
       }
       setTxnsLen(response.data?.txns?.length);
       // console.log(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("error", error);
+      setLoading(false);
     }
   };
   useEffect(() => {
     console.log("Transactions updated ");
 
     fetchTransactions();
-  }, [type, category, startDate, endDate, isModalOpen]);
+  }, [type, category, startDate, endDate]);
 
   const resetFilters = () => {
     setType("");
@@ -267,9 +271,9 @@ const Page = () => {
         </div>
 
         <div className="lg:w-auto w-full justify-items-center sm:justify-items-end">
-          <div className="flex items-center w-full sm:w-auto gap-2 border border-gray-200 hover:focus:border-gray-400 p-2 rounded-lg">
+          <div className="flex items-center w-full sm:w-auto gap-2 border bg-white border-gray-300 hover:focus:border-gray-400 focus:outline-none p-2 rounded-lg">
             <SearchIcon className="text-gray-500" />
-            <input type='text' value={searchTerm} onChange={(e) => setsearchTerm(e.target.value)} placeholder="Search" className="focus:border-none w-full" />
+            <input type='text' value={searchTerm} onChange={(e) => setsearchTerm(e.target.value)} placeholder="Search" className="focus:outline-none w-full" />
           </div>
         </div>
       </div>
@@ -313,8 +317,18 @@ const Page = () => {
                 </Tooltip>
               </p>
             )) :
-            (<p className="text-xs md:text-[14px] font-medium text-slate-800 cursor-pointer">
-              {moment(startDate).format("MMM YYYY")} - {moment(endDate).format("MMM YYYY")}
+            (<p className="text-xs md:text-[14px] font-medium text-slate-800 cursor-pointer"
+              onClick={() => {
+                setStartDate(
+                  new Date(Date.UTC(now.getFullYear(), now.getMonth(), 1))
+                );
+                setEndDate(
+                  new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0))
+                );
+              }}
+            ><Tooltip title="Go to Current Month">
+                {moment(startDate).format("MMM YYYY")} - {moment(endDate).format("MMM YYYY")}
+              </Tooltip>
             </p>)}
 
         <p
@@ -331,7 +345,7 @@ const Page = () => {
           Next {!isMobile ? "Month" : ""}  <ChevronRight />
         </p>
       </div>
-      <TransactionTable rows={rows} txnsLen={txnsLen} theadStyles={theadStyles} />
+      <TransactionTable rows={rows} loading={loading} txnsLen={txnsLen} theadStyles={theadStyles} />
 
       {/* Add Transaction Modal */}
       {/* <Modal

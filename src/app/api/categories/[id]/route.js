@@ -24,7 +24,7 @@ export async function PUT(request, { params }) {
     const data = await request.json();
     const txn = await CategoriesModel.findByIdAndUpdate(id, data, {
       new: true,
-    });
+    }).lean();
     return NextResponse.json(txn);
   } catch (error) {
     return NextResponse.json({

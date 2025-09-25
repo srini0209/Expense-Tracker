@@ -16,8 +16,9 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TransactionModal from "./TransactionModal";
+import { CircularProgress } from "@mui/joy";
 
-const TransactionTable = ({ rows, theadStyles, txnsLen }) => {
+const TransactionTable = ({ rows, theadStyles, txnsLen, loading }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -53,7 +54,23 @@ const TransactionTable = ({ rows, theadStyles, txnsLen }) => {
           </tr>
         </thead>
         <tbody>
-          {txnsLen > 0 ? (
+          {loading ? (
+            <tr>
+              <td colSpan={4} className="text-center py-10">
+                <div className="flex flex-col justify-center items-center">
+                  <CircularProgress
+                    size="lg"
+                    variant="soft"
+                    color="neutral"
+                    value={60}
+                  />
+                  <p className="text-slate-500 text-center text-sm mt-3">
+                    Loading...
+                  </p>
+                </div>
+              </td>
+            </tr>
+          ) : txnsLen > 0 ? (
             rows?.length > 0 ? (
               rows.map((row) => (
                 <tr

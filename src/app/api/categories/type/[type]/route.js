@@ -24,7 +24,7 @@ export async function GET(request, { params }) {
     const categories = await CategoriesModel.find({
       type: type,
       userId: userId,
-    });
+    }).lean();
     if (categories) {
       return NextResponse.json(categories);
     }

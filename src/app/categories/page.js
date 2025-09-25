@@ -15,6 +15,7 @@ import {
 import Modal from "../components/Modal";
 import CategoriesForm from "../components/CategoriesForm";
 import toast from "react-hot-toast";
+import { CircularProgress } from "@mui/joy";
 
 const Page = () => {
   // Date range
@@ -37,15 +38,22 @@ const Page = () => {
   const [editCatID, setEditCatID] = useState("");
   const [modalType, setModalType] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
+
   const fetchData = async () => {
     try {
+      // setLoading(true)
+
       const params = {};
       params.startDate = startDate.toISOString();
       params.endDate = endDate.toISOString();
       const response = await axiosInstance.get("/api/transactions", { params });
       setAnalyData(response.data.analyticsData);
+      // setLoading(false)
     } catch (error) {
       console.log("budgets page.js Error fetching Data:", error);
+      // setLoading(false)
     }
   };
   console.log("budgets page analydata:", AnalyData);
@@ -59,10 +67,13 @@ const Page = () => {
   //   );
   const fetchCategories = async () => {
     try {
+      setLoading(true)
       const response = await axiosInstance.get("/api/categories/");
       setCatData(response.data);
+      setLoading(false)
     } catch (error) {
       console.log("budgets page.js Error fetching Categories:", error);
+      setLoading(false)
     }
   };
   console.log("budgets: Cat data:", catData);
@@ -219,12 +230,12 @@ const Page = () => {
           </button>
         </div>
         {/* Search Box */}
-        <div className="flex p-3 gap-3 items-center border border-gray-300 rounded-xl shadow-lg w-full md:w-auto">
+        <div className="flex p-3 gap-3 items-center border bg-white border-gray-300 rounded-xl shadow-lg w-full md:w-auto">
           <SearchIcon className="text-slate-600" />
           <input
             type="text"
             placeholder="Search Categories"
-            className="border-0 focus:border-0"
+            className="border-0 focus:border-0 focus:outline-none"
             value={searchTerm}
             onChange={(e) => setsearchTerm(e.target.value)}
           />
@@ -233,71 +244,84 @@ const Page = () => {
 
       {/* Displaying Categories */}
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filteredCategories.map((cat) => (
-          <div
-            key={cat._id}
-            className={`bg-white rounded-xl p-6 shadow-lg border-l-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${cat.type === "Income"
-              ? "border-l-green-500 bg-gradient-to-br from-green-50 to-white"
-              : "border-l-red-500 bg-gradient-to-br from-red-50 to-white"
-              }`}
-          >
-            <div className="flex justify-between items-center mb-2">
-              <p className="font-semibold text-[18px] ">{cat.name}</p>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setIsModalOpen(true);
-                    setModalType('edit');
-                    setEditCatID(cat._id);
-                  }}
-                  className="hover:bg-blue-50 hover:text-blue-500 text-neutral-500 p-2 rounded cursor-pointer"
-                >
-                  <Edit2 className="h-4 w-4 " />
-                </button>
-                <button
-                  onClick={() => {
-                    setIsModalOpen(true);
-                    setModalType('delete');
-                    setEditCatID(cat._id);
-                  }}
-                  className="hover:bg-red-50 hover:text-red-500 text-neutral-500 p-2 rounded cursor-pointer"
-                >
-                  <Trash2 className="h-4 w-4 " />
-                </button>
-              </div>
-            </div>
-            {cat.type === "Expense" && (
-              <p className="font-medium text-sm text-gray-800 mb-2">
-                Budget: ₹ {cat.budget > 0 ? cat.budget : "NA"}
-              </p>
-            )}
-
-            <p className="font-medium text-sm text-gray-800 mb-2">
-              Total {cat.type === "Expense" ? "Spending" : "Gains"}: ₹{" "}
-              {catTotal(cat.name)}
+        {loading ? (<div className="text-center py-10 col-span-full">
+          <div className="flex flex-col justify-center items-center">
+            <CircularProgress
+              size="lg"
+              variant="soft"
+              color="neutral"
+              value={60}
+            />
+            <p className="text-slate-500 text-center text-sm mt-3">
+              Loading...
             </p>
-            {cat.budget > 0 ? (
-              <div className="flex items-center gap-1.5">
-                <div className="h-[10px] w-full bg-gray-200 text-left rounded-lg">
-                  <div
-                    className={`bg-amber-500 h-[10px] rounded-lg`}
-                    style={{
-                      width: `${cat.budget > 0
-                        ? Math.round((catTotal(cat.name) / cat.budget) * 100)
-                        : 0
-                        }%`,
-                    }}
-                  ></div>
-                </div><span className="text-gray-700 text-[10px]">
-                  {Math.round((catTotal(cat.name) / cat.budget) * 100)}%
-                </span>
-              </div>
-            ) : (
-              ""
-            )}
           </div>
-        ))}
+        </div>) :
+          filteredCategories.map((cat) => (
+            <div
+              key={cat._id}
+              className={`bg-white rounded-xl p-6 shadow-lg border-l-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${cat.type === "Income"
+                ? "border-l-green-500 bg-gradient-to-br from-green-50 to-white"
+                : "border-l-red-500 bg-gradient-to-br from-red-50 to-white"
+                }`}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <p className="font-semibold text-[18px] capitalize">{cat.name}</p>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setModalType('edit');
+                      setEditCatID(cat._id);
+                    }}
+                    className="hover:bg-blue-50 hover:text-blue-500 text-neutral-500 p-2 rounded cursor-pointer"
+                  >
+                    <Edit2 className="h-4 w-4 " />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setModalType('delete');
+                      setEditCatID(cat._id);
+                    }}
+                    className="hover:bg-red-50 hover:text-red-500 text-neutral-500 p-2 rounded cursor-pointer"
+                  >
+                    <Trash2 className="h-4 w-4 " />
+                  </button>
+                </div>
+              </div>
+              {cat.type === "Expense" && (
+                <p className="font-medium text-sm text-gray-800 mb-2">
+                  Budget: ₹ {cat.budget > 0 ? cat.budget : "NA"}
+                </p>
+              )}
+
+              <p className="font-medium text-sm text-gray-800 mb-2">
+                Total {cat.type === "Expense" ? "Spending" : "Gains"}: ₹{" "}
+                {catTotal(cat.name)}
+              </p>
+              {cat.budget > 0 ? (
+                <div className="flex items-center gap-1.5">
+                  <div className="h-[10px] w-full bg-gray-200 text-left rounded-lg">
+                    <div
+                      className={`bg-amber-500 h-[10px] rounded-lg`}
+                      style={{
+                        width: `${cat.budget > 0
+                          ? Math.round((catTotal(cat.name) / cat.budget) * 100)
+                          : 0
+                          }%`,
+                      }}
+                    ></div>
+                  </div><span className="text-gray-700 text-[10px]">
+                    {Math.round((catTotal(cat.name) / cat.budget) * 100)}%
+                  </span>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+          ))}
       </div>
 
       {/* Edit Category Modal */}
@@ -309,7 +333,7 @@ const Page = () => {
         {modalType !== 'delete' ? (modalType === 'add' ?
           <CategoriesForm fetchCategories={fetchCategories}
             fetchData={fetchData}
-            setIsModalOpen={setIsModalOpen}/>
+            setIsModalOpen={setIsModalOpen} />
           : <CategoriesForm fetchCategories={fetchCategories}
             fetchData={fetchData}
             setIsModalOpen={setIsModalOpen}
@@ -330,7 +354,7 @@ const Page = () => {
                   toast.success("Category Deleted");
                   setIsModalOpen(false);
                   fetchCategories();
-                  
+
                 } catch (error) {
                   console.log("Error deleting category", error);
                   toast.error("Error deleting category");

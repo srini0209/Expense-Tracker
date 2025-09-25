@@ -45,7 +45,7 @@ export async function POST(request) {
 
     const defaultCategories = [
       { type: "Income", name: "Salary" },
-      { type: "Income", name: "Dividend" },
+      { type: "Income", name: "Freelance" },
       { type: "Income", name: "Rental" },
       { type: "Expense", name: "Food" },
       { type: "Expense", name: "Transport" },

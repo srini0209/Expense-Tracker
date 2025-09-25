@@ -15,7 +15,7 @@ export async function POST(request) {
 
     const { email, password } = body;
 
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email }).lean();
     if (!user) {
       return NextResponse.json(
         { message: "Invalid Credentials" },

@@ -32,7 +32,7 @@ export async function GET(request) {
   // }
   try {
     await connectDB();
-    const user = await userModel.findById(userId).select("-password");
+    const user = await userModel.findById(userId).select("-password").lean();
     console.log("api/auth/user/route.js user:", user);
     if (!user) {
       return NextResponse.json({ message: "User Not FOund" }, { status: 404 });

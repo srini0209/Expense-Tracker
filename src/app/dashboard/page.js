@@ -23,6 +23,7 @@ import Modal from "../components/Modal";
 import TransactionForm from "../components/TransactionForm";
 import { set } from "mongoose";
 import TransactionModal from "../components/TransactionModal";
+import { CircularProgress } from "@mui/joy";
 
 const Page = () => {
   const { user, userloading, error } = useContext(UserContext);
@@ -176,7 +177,14 @@ const Page = () => {
       </LocalizationProvider>
       <p className="text-black">{dayjsValue.toISOString()}</p> */}
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex justify-center items-center h-screen w-screen fixed inset-0 z-100">
+          <div className="justify-center items-center">
+            <CircularProgress size="lg" variant="soft" color="neutral" value={60} />
+            <p className="text-slate-500 text-center text-sm mt-3">
+              Loading...
+            </p>
+            </div>
+        </div>
       ) : txnsLen > 0 ? (
         <>
           <div className="flex flex-col md:flex-row mx-auto gap-8 lg:flex-nowrap flex-wrap justify-between mb-10 z-10!">
@@ -269,10 +277,10 @@ const Page = () => {
 
               <button
                 className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 flex items-center gap-1.5 text-sm rounded-md font-medium cursor-pointer"
-                onClick={()=>{
+                onClick={() => {
                   setIsModalOpen(true);
                   setModalType('add');
-                
+
                 }}
               ><Plus />
                 <span>
@@ -303,12 +311,15 @@ const Page = () => {
             <h2>No Transactions Found..</h2>
             <p>
               Please start adding your Transactions here:
-              <Link
+              <button
                 className="bg-amber-100 border border-amber-200 text-amber-500 px-3 py-2 text-sm rounded-md font-medium"
-                href={"/transactions/add"}
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setModalType('add');
+                }}
               >
                 Add
-              </Link>
+              </button>
             </p>
           </div>
         </>

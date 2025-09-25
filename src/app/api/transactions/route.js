@@ -69,7 +69,7 @@ export async function GET(request, { params }) {
     console.log("api/transactions/route.js userId:", userId);
     const txns = await TransactionsModel.find(filter)
       .sort({ date: -1 })
-      .limit(limitCount ? limitCount : "");
+      .limit(limitCount ? limitCount : "").lean();
 
     // const Incomepipeline = [
     //   {

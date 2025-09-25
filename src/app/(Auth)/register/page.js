@@ -7,6 +7,7 @@ import { validateEmail } from "../../../../utils/helper.js";
 import Input from "../../components/Inputs/Input.js";
 import axiosInstance from "../../axiosInstance.js";
 import { useRouter } from "next/navigation.js";
+import { CircularProgress } from "@mui/joy";
 // import ProfilePhotoSelector from "../../components/_ProfileImageSelector.js/index.js";
 
 const Page = () => {
@@ -14,47 +15,21 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [profileImage, setProfileImage] = useState("");
+
 
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const uploadImage = async (profileImg) => {
-    console.log("Upload image call Profile Image:", profileImage);
-
-    if (!(profileImg instanceof File)) {
-      console.error("uploadImage called with invalid input:", profileImg);
-      throw new Error("Invalid image file.");
-    }
-
-    const formData = new FormData();
-
-    // Append Image file to form Data
-    formData.append("file", profileImg);
-    // console.log(formData);
-    // console.log(formData.get('file'));
-
-    try {
-      const response = await axiosInstance.post(
-        "/api/uploads/profile",
-        formData
-        // { headers: undefined
-        // { "Content-Type": "multipart/form-data" }
-        // }// Set Header for file upload
-      );
-      return response.data; // return response data
-    } catch (error) {
-      console.error("Error uploading the image", error);
-      throw error; // Rethrow error for handling
-    }
-  };
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       router.push("/dashboard");
     }
   }, [router]);
+
+  // Registeration Handler
   const handleRegistration = async (e) => {
     e.preventDefault();
 
@@ -87,24 +62,23 @@ const Page = () => {
     // API calls to Register
 
     try {
-      // if (profileImage) {
-      //   const imgUploadResponse = await uploadImage(profileImage);
-      //   profileImageURL = imgUploadResponse.imageUrl || "";
-      //   console.log("profileImageUrl", profileImageURL);
-      // }
+      setLoading(true);
+
       const response = await axiosInstance.post("/api/auth/register", {
         name: name,
         email: email,
         password: password,
-        // profileImage: profileImageURL
+
       });
       router.push("/login");
+      setLoading(false);
     } catch (error) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);
       } else {
         setError("Something went wrong. Please try again");
       }
+      setLoading(false);
     }
   };
   return (
@@ -117,7 +91,7 @@ const Page = () => {
                         label="Name"
                         placeholder='Your Name'
                     /> */}
-        <div className="flex flex-col w-full gap-4">
+        <div className="flex flex-col w-full gap-2">
           {/*<ProfilePhotoSelector image={profileImage} setImage={setProfileImage} />*/}
           <Input
             placeholder="Enter your name"
@@ -163,11 +137,13 @@ const Page = () => {
           Sign Up
         </button>
       </Form>
-      <Link href="/login" className="text-indigo-500 text-sm font-normal leading-normal pb-3 my-3 text-start underline">
+      <Link href="/login" className="text-indigo-500 text-sm font-normal leading-normal  mt-3 text-start underline">
         Already have an account? Log In</Link>
-      
+      {loading && <div>
+        <CircularProgress size="lg" variant="soft" color="neutral" value={60} />
+      </div>}
     </>
   );
-};
+}
 
 export default Page;

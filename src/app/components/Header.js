@@ -98,12 +98,12 @@ const Navbar = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
               className="text-white text-sm font-medium leading-normal"
               href="#"
             >
-
-              <button className="cursor-pointer bg-gray-100/20 rounded-full p-2"
+{/* UnComment when Implementing user page */}
+              {/* <button className="cursor-pointer bg-gray-100/20 rounded-full p-2"
                 onClick={() => setIsModalOpen(true)}
               >
                 <User />
-              </button>
+              </button> */}
 
             </Link>
             <p

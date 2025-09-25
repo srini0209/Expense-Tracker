@@ -8,11 +8,14 @@ import Input from "../../components/Inputs/Input.js";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import axiosInstance from "../../axiosInstance.js";
+import { CircularProgress } from "@mui/joy";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -38,6 +41,7 @@ const Login = () => {
 
     // Login API call
     try {
+      setLoading(true);
       const response = await axiosInstance.post("/api/auth/login", {
         email: email,
         password: password,
@@ -55,14 +59,15 @@ const Login = () => {
         "Login/Page.js LocalStorage Token:",
         localStorage.getItem(token)
       );
-
       router.push("/dashboard");
+      setLoading(false);
     } catch (error) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);
       } else {
         setError("Something went wrong. Please try again");
       }
+      setLoading(false);
     }
   };
   return (
@@ -101,9 +106,12 @@ const Login = () => {
           Login
         </button>
       </Form>
-      <Link href="/register" className="text-indigo-500 text-sm font-normal leading-normal pb-3 my-3 text-start underline">
+      <Link href="/register" className="text-indigo-500 text-sm font-normal leading-normal  mt-3 text-start underline">
         Don't have an account? Sign up</Link>
-
+      {loading &&
+       <div className="flex justify-center items-center h-screen w-screen fixed inset-0 z-100">
+        <CircularProgress size="lg" variant="soft" color="neutral" value={60} />
+      </div>}
     </>
   );
 };
