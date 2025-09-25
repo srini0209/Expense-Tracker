@@ -2,7 +2,7 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../Context/UserContext";
 
-const page = () => {
+const Page = () => {
   const { user, userCategories } = useContext(UserContext)
   const [usrName, setUsrName] = useState("");
   const [usrEmail, setUsrEmail] = useState("");
@@ -44,4 +44,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

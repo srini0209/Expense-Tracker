@@ -35,7 +35,7 @@ import TransactionForm from "../../../components/TransactionForm";
 import TransactionModal from "../../../components/TransactionModal";
 
 
-const page = () => {
+const Page = () => {
   const [txns, setTxns] = useState([]);
   // Filter values
   const [type, setType] = useState("");
@@ -349,4 +349,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

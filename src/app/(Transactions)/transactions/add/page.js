@@ -18,9 +18,9 @@ import axiosInstance from "../../../axiosInstance.js";
 import toast from "react-hot-toast";
 import TransactionForm from "../../../components/TransactionForm.js";
 
-const page = () => {
+const Page = () => {
 
   return <TransactionForm  />;
 };
 
-export default page;
+export default Page;

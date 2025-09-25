@@ -10,7 +10,7 @@ const getCategory = async (id) => {
   return data;
 };
 
-const page = async ({ params }) => {
+const Page = async ({ params }) => {
   const { id } = await params;
   const cat = await getCategory(id);
   console.log("id-page.js Transaction fetch Txn", cat);
@@ -18,4 +18,4 @@ const page = async ({ params }) => {
   return <CategoriesForm initialData={cat} />;
 };
 
-export default page;
+export default Page;

@@ -24,7 +24,7 @@ import TransactionForm from "../components/TransactionForm";
 import { set } from "mongoose";
 import TransactionModal from "../components/TransactionModal";
 
-const page = () => {
+const Page = () => {
   const { user, userloading, error } = useContext(UserContext);
   console.log('context user:', user)
   // const [date, setDate] = useState(dayjs());
@@ -329,4 +329,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

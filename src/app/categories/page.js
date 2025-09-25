@@ -16,7 +16,7 @@ import Modal from "../components/Modal";
 import CategoriesForm from "../components/CategoriesForm";
 import toast from "react-hot-toast";
 
-const page = () => {
+const Page = () => {
   // Date range
   const now = new Date();
   const [startDate, setStartDate] = useState(
@@ -350,4 +350,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

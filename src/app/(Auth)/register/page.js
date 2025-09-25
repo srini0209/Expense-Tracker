@@ -7,9 +7,9 @@ import { validateEmail } from "../../../../utils/helper.js";
 import Input from "../../components/Inputs/Input.js";
 import axiosInstance from "../../axiosInstance.js";
 import { useRouter } from "next/navigation.js";
-import ProfilePhotoSelector from "../../components/ProfileImageSelector.js";
+// import ProfilePhotoSelector from "../../components/_ProfileImageSelector.js/index.js";
 
-const page = () => {
+const Page = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -170,4 +170,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

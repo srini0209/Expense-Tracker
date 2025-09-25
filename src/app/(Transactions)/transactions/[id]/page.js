@@ -37,7 +37,7 @@ const getTransaction = async (id) => {
   // return res.json();
 };
 
-const page = async ({ params }) => {
+const Page = async ({ params }) => {
   const { id } = await params;
   const txn =await getTransaction(id);
   console.log("id-page.js Transaction fetch Txn",txn)
@@ -52,4 +52,4 @@ const page = async ({ params }) => {
   return <TransactionForm initialData={txn} />;
 };
 
-export default page;
+export default Page;

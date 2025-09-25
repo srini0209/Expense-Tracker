@@ -47,6 +47,7 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
   useEffect(() => {
     fetchCategories();
   }, [type]);
+  
   useEffect(() => {
     if (initialData?.category) {
       setCategory(initialData?.category);

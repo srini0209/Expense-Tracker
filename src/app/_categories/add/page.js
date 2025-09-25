@@ -1,10 +1,8 @@
-import CategoriesForm from '../../components/CategoriesForm'
-import React from 'react'
+import CategoriesForm from "../../components/CategoriesForm";
+import React from "react";
 
-const page = () => {
-  return (
-    <CategoriesForm />
-  )
-}
+const Page = () => {
+  return <CategoriesForm />;
+};
 
-export default page
+export default Page;

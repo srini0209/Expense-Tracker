@@ -163,7 +163,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-chat-bg">
+    <div className="flex flex-col h-[calc(100vh-80px)] bg-chat-bg">
       {/* Header */}
       <div className="bg-white border-b border-border-light px-4 py-3 flex items-center justify-between">
         <div>
