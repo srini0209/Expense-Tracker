@@ -154,7 +154,7 @@ const Page = () => {
             setIsModalOpen(true);
             setModalType('add');
           }}
-          className="px-3 py-2 bg-linear-to-br from-indigo-500 to-blue-500 shadow-lg cursor-pointer rounded-lg text-white font-semibold flex gap-2 items-center"     >
+          className="px-3 py-2 justify-center bg-linear-to-br from-indigo-500 to-blue-500 shadow-lg cursor-pointer rounded-lg text-white font-semibold flex gap-2 items-center"     >
           <Plus /><span>
 
             Add Transaction

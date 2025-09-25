@@ -116,7 +116,7 @@ const Page = () => {
     // console.log("Transactions Page mounted ");
 
     fetchRecentTransactions();
-  }, [isModalOpen]);
+  }, []);
   const totInc = () => {
     const found = analyData?.find(item => item.txnType === 'Income');
     return found ? found.totalAmount : 0;

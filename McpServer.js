@@ -130,7 +130,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
-    const mongoUri = "mongodb+srv://srini0610:1yzzsRIurS7MmGkg@cluster0.feqcy.mongodb.net/Expense-Tracker?retryWrites=true&w=majority&appName=Cluster0";
+    const mongoUri = process.env.MONGO_URI;
     console.error("Attempting to connect to MongoDB with URI:", mongoUri); // Log the URI before connecting
     await mongoose.connect(mongoUri);
 
