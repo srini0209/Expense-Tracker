@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import TransactionModal from "./TransactionModal";
 import { CircularProgress } from "@mui/joy";
+import { capitalize } from "../../utils/helper";
 
 const TransactionTable = ({ rows, theadStyles, txnsLen, loading }) => {
   const theme = useTheme();
@@ -90,7 +91,7 @@ const TransactionTable = ({ rows, theadStyles, txnsLen, loading }) => {
                     {moment(row.date).format("DD-MM-YYYY hh:mm A")}
                   </td>
                   <td className="txn-table-cell sm:block hidden">
-                    {row.category}
+                    {capitalize(row.category)}
                   </td>
                   <td
                     className="txn-table-cell text-violet-600! sm:text-slate-800!"
@@ -101,7 +102,7 @@ const TransactionTable = ({ rows, theadStyles, txnsLen, loading }) => {
                     <p className="text-[10px] sm:hidden block pb-1.5 pt-1.5 text-slate-800">
                       Category:{" "}
                       <span className="text-xs text-blue-600">
-                        {row.category}
+                        {capitalize(row.category)}
                       </span>
                     </p>
                     <p className="text-[10px] sm:hidden  block text-slate-800">

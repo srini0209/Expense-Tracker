@@ -1,6 +1,9 @@
 import { Geist, Geist_Mono, Inter, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header.js";
+import Header2 from "./components/Header2.jsx";
+import Header3 from "./components/Header3.jsx";
+import Header4 from "./components/Header4.jsx";
 import Footer from "./components/Footer.js";
 import { UserProvider, UserContext } from "./Context/UserContext.js";
 import { Toaster } from "react-hot-toast";
@@ -42,7 +45,7 @@ export default function RootLayout({ children }) {
           <div className="layout-container flex h-full grow flex-col">
             {/* <MuiThemeProvider> */}
             <UserProvider>
-              <Header />
+              <Header3 />
               <div className=" sm:w-[90%] md:w-[80%] lg:w-[1000px] xl:w-[1200px] w-full px-3 mx-auto h-full grow">
                 {children}
               </div>

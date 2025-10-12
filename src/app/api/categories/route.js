@@ -1,7 +1,8 @@
-import connectDB from "../../../../utils/dbConnect.js";
+import connectDB from "../../../utils/dbConnect.js";
 import CategoriesModel from "../../../../models/CategoriesModel.js";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server.js";
+import { sanitizeInput } from "../../../utils/sanitizeInput.js";
 
 export async function GET(request) {
   const authHeader = request.headers.get("authorization");
@@ -49,12 +50,21 @@ export async function POST(request) {
     await connectDB();
     let budget;
     const body = await request.json();
-    const { type, name } = body;
-    const recordToCreate = { userId: userId, type: type, name: name.trim().toLowerCase() };
+    const cleanData = sanitizeInput(body);
+    const { type, name } = cleanData;
+    const recordToCreate = {
+      userId: userId,
+      type: type,
+      name: name.trim().toLowerCase(),
+    };
     if (body.budget && body.budget > 0) {
       recordToCreate.budget = body.budget;
     }
-    const exists = await CategoriesModel.findOne({ userId: userId, type: type, name: name.trim().toLowerCase() });
+    const exists = await CategoriesModel.findOne({
+      userId: userId,
+      type: type,
+      name: name.trim().toLowerCase(),
+    });
     if (exists) {
       return NextResponse.json(
         { message: "Category Already Exists" },

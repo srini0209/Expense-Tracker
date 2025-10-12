@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
-
+import { capitalize } from "../../utils/helper";
 export default function PieActiveArc({
   data,
   type,
@@ -16,7 +16,7 @@ export default function PieActiveArc({
   const denominator = type == "Income" ? totalIncome : totalExpense;
   const inputData = found.categories.map((item, index) => ({
     id: index,
-    label: item.category,
+    label: capitalize(item.category),
     value:
       denominator && denominator !== 0
         ? ((item?.totalAmount / denominator) * 100).toFixed(2)

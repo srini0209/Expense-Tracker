@@ -1,10 +1,13 @@
-import connectDB from "../../../../../../utils/dbConnect.js";
+import connectDB from "../../../../../utils/dbConnect.js";
 import CategoriesModel from "../../../../../../models/CategoriesModel.js";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server.js";
+import { sanitizeInput } from "../../../../../utils/sanitizeInput.js";
 
 export async function GET(request, { params }) {
   const { type } = await params;
+  const sanitizedType = sanitizeInput(type);
+  console.log(type);
   const authHeader = request.headers.get("authorization");
   console.log("auth Header", authHeader);
 
@@ -22,7 +25,7 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
     const categories = await CategoriesModel.find({
-      type: type,
+      type: sanitizedType,
       userId: userId,
     }).lean();
     if (categories) {

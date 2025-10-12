@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import axiosInstance from "../axiosInstance.js";
 import { useRouter } from "next/navigation.js";
 import toast from "react-hot-toast";
+import { capitalize } from "../../utils/helper.js";
 
 const CategoriesForm = ({
   initialData = {},
@@ -100,7 +101,7 @@ const CategoriesForm = ({
         label={"Name"}
         type={"text"}
         placeholder={"Enter Category Name"}
-        value={name}
+        value={capitalize(name)}
         onChange={(e) => setName(e.target.value)}
       />
       {type === "Expense" && (

@@ -1,8 +1,9 @@
-import connectDB from "../../../../../utils/dbConnect.js";
+import connectDB from "../../../../utils/dbConnect.js";
 import UserModel from "../../../../../models/UserModel.js";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { sanitizeInput } from "../../../../utils/sanitizeInput.js";
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -12,8 +13,8 @@ export async function POST(request) {
     await connectDB();
 
     const body = await request.json();
-
-    const { email, password } = body;
+    const cleanData = sanitizeInput(body);
+    const { email, password } = cleanData;
 
     const user = await UserModel.findOne({ email }).lean();
     if (!user) {
@@ -27,6 +28,12 @@ export async function POST(request) {
     if (!isPasswordMatch) {
       return NextResponse.json(
         { message: "Invalid Credentials" },
+        { status: 401 }
+      );
+    }
+    if(!user.emailVerified){
+      return NextResponse.json(
+        { message: "Please verify your email to login!" },
         { status: 401 }
       );
     }

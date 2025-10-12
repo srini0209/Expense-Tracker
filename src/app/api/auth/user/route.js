@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import customMiddleware from "../../../customMiddleware.js";
-import connectDB from "../../../../../utils/dbConnect.js";
+import connectDB from "../../../../utils/dbConnect.js";
 import userModel from "../../../../../models/UserModel.js";
 import jwt from 'jsonwebtoken'
 

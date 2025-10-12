@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../../../utils/dbConnect.js";
+import connectDB from "../../../../utils/dbConnect.js";
 import TransactionsModel from "../../../../../models/TransactionsModel.js";
+import mongoose from "mongoose";
 
 export async function GET(request, { params }) {
   const { id } = await params;
   try {
     await connectDB();
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { message: "ID is not a Valid ObjectId" },
+        { status: 403 }
+      );
+    }
     const txn = await TransactionsModel.findById(id).lean();
     return NextResponse.json(txn);
   } catch (error) {
@@ -20,7 +27,14 @@ export async function PUT(request, { params }) {
   const { id } = await params;
   try {
     await connectDB();
-    const data = await request.json();
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { message: "ID is not a Valid ObjectId" },
+        { status: 403 }
+      );
+    }
+    const rawData = await request.json();
+    const data = sanitizeInput(rawData);
     const txn = await TransactionsModel.findByIdAndUpdate(id, data, {
       new: true,
     });
@@ -37,6 +51,12 @@ export async function DELETE(request, { params }) {
   const { id } = await params;
   try {
     await connectDB();
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { message: "ID is not a Valid ObjectId" },
+        { status: 403 }
+      );
+    }
     // const data = await request.json();
     const txn = await TransactionsModel.findByIdAndDelete(id).lean();
     return NextResponse.json(txn);

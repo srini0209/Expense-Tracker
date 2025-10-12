@@ -33,6 +33,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import TransactionForm from "../../../components/TransactionForm";
 import TransactionModal from "../../../components/TransactionModal";
+import { capitalize } from "../../../../utils/helper";
 
 
 const Page = () => {
@@ -252,7 +253,7 @@ const Page = () => {
               >
                 {catOptions.map((catOption, index) => (
                   <MenuItem key={catOption._id} value={catOption.name}>
-                    {catOption.name}
+                    {capitalize(catOption.name)}
                   </MenuItem>
                 ))}
               </Select>

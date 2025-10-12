@@ -16,6 +16,7 @@ import Modal from "../components/Modal";
 import CategoriesForm from "../components/CategoriesForm";
 import toast from "react-hot-toast";
 import { CircularProgress } from "@mui/joy";
+import { capitalize } from "../../utils/helper";
 
 const Page = () => {
   // Date range
@@ -36,10 +37,9 @@ const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editCatID, setEditCatID] = useState("");
-  const [modalType, setModalType] = useState('');
+  const [modalType, setModalType] = useState("");
 
   const [loading, setLoading] = useState(false);
-
 
   const fetchData = async () => {
     try {
@@ -67,13 +67,13 @@ const Page = () => {
   //   );
   const fetchCategories = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await axiosInstance.get("/api/categories/");
       setCatData(response.data);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       console.log("budgets page.js Error fetching Categories:", error);
-      setLoading(false)
+      setLoading(false);
     }
   };
   console.log("budgets: Cat data:", catData);
@@ -115,9 +115,16 @@ const Page = () => {
     return expenseData?.length;
   };
   // Category total
-  const catTotal = (catName) => {
+  const exCatTotal = (catName) => {
     const expenseData = AnalyData?.find((item) => item.txnType === "Expense");
     const found = expenseData?.categories?.find(
+      (item) => item.category === catName
+    );
+    return found ? found.totalAmount : 0;
+  };
+  const inCatTotal = (catName) => {
+    const incomeData = AnalyData?.find((item) => item.txnType === "Income");
+    const found = incomeData?.categories?.find(
       (item) => item.category === catName
     );
     return found ? found.totalAmount : 0;
@@ -125,13 +132,16 @@ const Page = () => {
   return (
     <div className="my-10 px-5">
       <div className="flex flex-wrap sm:flex-nowrap justify-between mb-8 items-center">
-
         <h2 className=" text-2xl font-semibold text-blue-500">Categories</h2>
-        <button onClick={() => {
-          setIsModalOpen(true);
-          setModalType('add');
-        }}
-          className="px-3 py-2 bg-linear-to-br from-indigo-500 to-blue-500 shadow-lg rounded-lg cursor-pointer text-white font-semibold flex gap-2 items-center"><Plus /> Add Category</button>
+        <button
+          onClick={() => {
+            setIsModalOpen(true);
+            setModalType("add");
+          }}
+          className="px-3 py-2 bg-linear-to-br from-indigo-500 to-blue-500 shadow-lg rounded-lg cursor-pointer text-white font-semibold flex gap-2 items-center"
+        >
+          <Plus /> Add Category
+        </button>
       </div>
       {/* Summaries: Total Income, Total Expense, Balance, Total Categories */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5  justify-between mb-10">
@@ -209,20 +219,22 @@ const Page = () => {
         {/* Tabs */}
         <div className="p-1.5 flex gap-0.5 rounded-lg shadow-lg bg-white">
           <button
-            className={`px-6 py-3 rounded-md font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === "Expense"
-              ? "bg-red-500 text-white shadow-md"
-              : "text-gray-600 hover:text-red-500 hover:bg-red-50"
-              }`}
+            className={`px-6 py-3 rounded-md font-medium transition-all duration-200 flex items-center gap-2 ${
+              activeTab === "Expense"
+                ? "bg-red-500 text-white shadow-md"
+                : "text-gray-600 hover:text-red-500 hover:bg-red-50"
+            }`}
             onClick={() => setActiveTab("Expense")}
           >
             <TrendingDown />
             Expense ({ExpenseCats()})
           </button>
           <button
-            className={`px-6 py-3 rounded-md font-medium transition-all duration-200 flex items-center gap-2 ${activeTab === "Income"
-              ? "bg-green-500 text-white shadow-md"
-              : "text-gray-600 hover:text-green-500 hover:bg-green-50"
-              }`}
+            className={`px-6 py-3 rounded-md font-medium transition-all duration-200 flex items-center gap-2 ${
+              activeTab === "Income"
+                ? "bg-green-500 text-white shadow-md"
+                : "text-gray-600 hover:text-green-500 hover:bg-green-50"
+            }`}
             onClick={() => setActiveTab("Income")}
           >
             <TrendingUp />
@@ -244,35 +256,40 @@ const Page = () => {
 
       {/* Displaying Categories */}
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {loading ? (<div className="text-center py-10 col-span-full">
-          <div className="flex flex-col justify-center items-center">
-            <CircularProgress
-              size="lg"
-              variant="soft"
-              color="neutral"
-              value={60}
-            />
-            <p className="text-slate-500 text-center text-sm mt-3">
-              Loading...
-            </p>
+        {loading ? (
+          <div className="text-center py-10 col-span-full">
+            <div className="flex flex-col justify-center items-center">
+              <CircularProgress
+                size="lg"
+                variant="soft"
+                color="neutral"
+                value={60}
+              />
+              <p className="text-slate-500 text-center text-sm mt-3">
+                Loading...
+              </p>
+            </div>
           </div>
-        </div>) :
+        ) : (
           filteredCategories.map((cat) => (
             <div
               key={cat._id}
-              className={`bg-white rounded-xl p-6 shadow-lg border-l-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${cat.type === "Income"
-                ? "border-l-green-500 bg-gradient-to-br from-green-50 to-white"
-                : "border-l-red-500 bg-gradient-to-br from-red-50 to-white"
-                }`}
+              className={`bg-white rounded-xl p-6 shadow-lg border-l-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
+                cat.type === "Income"
+                  ? "border-l-green-500 bg-gradient-to-br from-green-50 to-white"
+                  : "border-l-red-500 bg-gradient-to-br from-red-50 to-white"
+              }`}
             >
               <div className="flex justify-between items-center mb-2">
-                <p className="font-semibold text-[18px] capitalize">{cat.name}</p>
+                <p className="font-semibold text-[18px] capitalize">
+                  {cat.name}
+                </p>
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
                       setIsModalOpen(true);
-                      setModalType('edit');
+                      setModalType("edit");
                       setEditCatID(cat._id);
                     }}
                     className="hover:bg-blue-50 hover:text-blue-500 text-neutral-500 p-2 rounded cursor-pointer"
@@ -282,7 +299,7 @@ const Page = () => {
                   <button
                     onClick={() => {
                       setIsModalOpen(true);
-                      setModalType('delete');
+                      setModalType("delete");
                       setEditCatID(cat._id);
                     }}
                     className="hover:bg-red-50 hover:text-red-500 text-neutral-500 p-2 rounded cursor-pointer"
@@ -299,7 +316,9 @@ const Page = () => {
 
               <p className="font-medium text-sm text-gray-800 mb-2">
                 Total {cat.type === "Expense" ? "Spending" : "Gains"}: ₹{" "}
-                {catTotal(cat.name)}
+                {activeTab === "Expense"
+                  ? exCatTotal(cat.name)
+                  : inCatTotal(cat.name)}
               </p>
               {cat.budget > 0 ? (
                 <div className="flex items-center gap-1.5">
@@ -307,69 +326,100 @@ const Page = () => {
                     <div
                       className={`bg-amber-500 h-[10px] rounded-lg`}
                       style={{
-                        width: `${cat.budget > 0
-                          ? Math.round((catTotal(cat.name) / cat.budget) * 100)
-                          : 0
-                          }%`,
+                        width: `${
+                          cat.budget > 0
+                            ? Math.round(
+                                (exCatTotal(cat.name) / cat.budget) * 100
+                              ) <= 100
+                              ? Math.round(
+                                  (exCatTotal(cat.name) / cat.budget) * 100
+                                )
+                              : 100
+                            : 0
+                        }%`,
                       }}
                     ></div>
-                  </div><span className="text-gray-700 text-[10px]">
-                    {Math.round((catTotal(cat.name) / cat.budget) * 100)}%
+                  </div>
+                  <span className="text-gray-700 text-[10px]">
+                    {Math.round((exCatTotal(cat.name) / cat.budget) * 100)}%
                   </span>
                 </div>
               ) : (
                 ""
               )}
             </div>
-          ))}
+          ))
+        )}
       </div>
 
       {/* Edit Category Modal */}
       <Modal
         isOpen={isModalOpen}
-        title={`${modalType !== 'delete' ? (`${modalType === 'add' ? 'Add' : 'Edit'} `) : 'Delete '} Category`}
+        title={`${
+          modalType !== "delete"
+            ? `${modalType === "add" ? "Add" : "Edit"} `
+            : "Delete "
+        } Category`}
         onClose={() => setIsModalOpen(false)}
       >
-        {modalType !== 'delete' ? (modalType === 'add' ?
-          <CategoriesForm fetchCategories={fetchCategories}
-            fetchData={fetchData}
-            setIsModalOpen={setIsModalOpen} />
-          : <CategoriesForm fetchCategories={fetchCategories}
-            fetchData={fetchData}
-            setIsModalOpen={setIsModalOpen}
-            initialData={catData.find((item) => item._id === editCatID)}
-          />) : (
+        {modalType !== "delete" ? (
+          modalType === "add" ? (
+            <CategoriesForm
+              fetchCategories={fetchCategories}
+              fetchData={fetchData}
+              setIsModalOpen={setIsModalOpen}
+            />
+          ) : (
+            <CategoriesForm
+              fetchCategories={fetchCategories}
+              fetchData={fetchData}
+              setIsModalOpen={setIsModalOpen}
+              initialData={catData.find((item) => item._id === editCatID)}
+            />
+          )
+        ) : (
           <>
-            <p className="text-lg font-medium text-blue-500 mb-2">Are you sure?</p>
-            <p className="text-slate-800 text-sm"><span className="text-indigo-500">"{catData.find((item) => item._id === editCatID)?.name}"</span> Will be Deleted.</p>
+            <p className="text-lg font-medium text-blue-500 mb-2">
+              Are you sure?
+            </p>
+            <p className="text-slate-800 text-sm">
+              <span className="text-indigo-500">
+                &quot;
+                {capitalize(
+                  catData.find((item) => item._id === editCatID)?.name
+                )}
+                &quot;
+              </span>{" "}
+              Will be Deleted.
+            </p>
             <div className="flex gap-2 justify-end items-center mt-4">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="border-blue-200 border text-blue-500 cursor-pointer p-2 rounded-lg">
+                className="border-blue-200 border text-blue-500 cursor-pointer p-2 rounded-lg"
+              >
                 Cancel
               </button>
-              <button onClick={async () => {
-                try {
-                  await axiosInstance.delete(`/api/categories/${editCatID}`);
-                  toast.success("Category Deleted");
-                  setIsModalOpen(false);
-                  fetchCategories();
-
-                } catch (error) {
-                  console.log("Error deleting category", error);
-                  toast.error("Error deleting category");
-                  setIsModalOpen(false);
-                }
-
-              }}
-                className="bg-red-500 text-white border border-red-500 cursor-pointer p-2 rounded-lg">
+              <button
+                onClick={async () => {
+                  try {
+                    await axiosInstance.delete(`/api/categories/${editCatID}`);
+                    toast.success("Category Deleted");
+                    setIsModalOpen(false);
+                    fetchCategories();
+                  } catch (error) {
+                    console.log("Error deleting category", error);
+                    toast.error("Error deleting category");
+                    setIsModalOpen(false);
+                  }
+                }}
+                className="bg-red-500 text-white border border-red-500 cursor-pointer p-2 rounded-lg"
+              >
                 Delete
               </button>
             </div>
-          </>)}
+          </>
+        )}
       </Modal>
-
-
     </div>
   );
 };

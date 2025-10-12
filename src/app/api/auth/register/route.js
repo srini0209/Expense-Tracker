@@ -1,9 +1,11 @@
-import connectDB from "../../../../../utils/dbConnect.js";
+import connectDB from "../../../../utils/dbConnect.js";
 import UserModel from "../../../../../models/UserModel.js";
-import CategoriesModel from "../../../../../models/CategoriesModel.js"
+import CategoriesModel from "../../../../../models/CategoriesModel.js";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
+import { sanitizeInput } from "../../../../utils/sanitizeInput.js";
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "3d" });
@@ -19,8 +21,8 @@ export async function POST(request) {
     await connectDB();
 
     const body = await request.json();
-
-    const { name, email, password, profileImage } = body;
+    const cleanData = sanitizeInput(body);
+    const { name, email, password } = cleanData;
 
     const isUserExists = await UserModel.findOne({ email });
     if (isUserExists) {
@@ -39,8 +41,7 @@ export async function POST(request) {
       name: name,
       email: email,
       password: hashedPassword,
-      // profileImage: profileImage,
-      createdAt: Date.now(),
+      emailVerified: false,
     });
 
     const defaultCategories = [
@@ -52,12 +53,32 @@ export async function POST(request) {
       { type: "Expense", name: "Rent" },
       { type: "Expense", name: "Bill Payments" },
       { type: "Expense", name: "Groceries" },
-    ].map((cat) => ({ userId: user._id, ...cat }))
+    ].map((cat) => ({ userId: user._id, ...cat }));
     const Categories = await CategoriesModel.insertMany(defaultCategories);
+
+    const VerifyToken = jwt.sign({ email }, process.env.JWT_SECRET );
+
+    // Create verification link
+    const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify?token=${VerifyToken}`;
+
+    // 5. Send verification email
+    const transporter = nodemailer.createTransport({
+      service: "Gmail", // or SMTP config
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+    });
+
+    await transporter.sendMail({
+      from: `"FinTrack" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Verify your email",
+      html: `<p>Hi ${name},</p>
+           <p>Click below to verify your email:</p>
+           <a href="${verifyUrl}">${verifyUrl}</a>`,
+    });
 
     return NextResponse.json(
       {
-        message: "User Registered Successfully",
+        message: "User Registered Successfully, check your email to verify.",
         data: {
           userId: user._id,
           name: user.name,
@@ -65,7 +86,7 @@ export async function POST(request) {
           profileImage: user.profileImage,
           createdAt: user.createdAt,
           token: generateToken(user._id),
-          categories:Categories
+          categories: Categories,
         },
       },
       { status: 201 }

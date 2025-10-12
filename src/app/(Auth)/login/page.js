@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import LoginSigupTab from "../../components/LoginSigupTab";
 import Form from "next/form";
 import Link from "next/link";
-import { validateEmail } from "../../../../utils/helper";
+import { validateEmail } from "../../../utils/helper";
 import Input from "../../components/Inputs/Input.js";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -94,6 +94,11 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <div class="flex justify-end w-full">
+            <Link href="/forgot-password" className="text-indigo-500 text-sm font-normal leading-normal text-start underline">
+              Forgot Password?
+            </Link>
+          </div>
         </div>
 
         {error && (

@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import axiosInstance from "../axiosInstance.js";
 import toast from "react-hot-toast";
 // import { log } from "console";
+import { capitalize } from "../../utils/helper.js";
 
 const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
   console.log("Txn Form -Initial Data:", initialData);
@@ -47,7 +48,7 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
   useEffect(() => {
     fetchCategories();
   }, [type]);
-  
+
   useEffect(() => {
     if (initialData?.category) {
       setCategory(initialData?.category);
@@ -114,7 +115,6 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
       console.log("error on Editing or creating transaction:", error.message);
     } finally {
       setIsModalOpen(false);
-      
     }
   };
 
@@ -128,16 +128,13 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
       console.log("Error deleting txn", error);
     } finally {
       setIsModalOpen(false);
-      
     }
   };
 
   return (
     <div className="w-full mx-auto txn-form">
-
-      <Form  >
+      <Form>
         <RadioGroup
-
           value={type}
           onChange={(e) => {
             setType(e.target.value);
@@ -149,7 +146,7 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
           label={"Amount"}
           type={"Number"}
           placeholder={"Enter Amount"}
-          prefix={"$"}
+          prefix={"₹"}
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
         />
@@ -180,7 +177,7 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
             >
               {catOptions.map((catOption, index) => (
                 <MenuItem key={catOption._id} value={catOption.name}>
-                  {catOption.name}
+                  {capitalize(catOption.name)}
                 </MenuItem>
               ))}
             </Select>
@@ -227,7 +224,8 @@ const TransactionForm = ({ initialData = {}, setIsModalOpen }) => {
             ""
           )}
           <button
-            type="submit" onClick={submitHandler}
+            type="submit"
+            onClick={submitHandler}
             className="text-blue-500 border hover:bg-blue-200 border-blue-300 bg-blue-100 text-sm font-medium  rounded-md px-4 py-2 cursor-pointer transition-colors duration-200"
           >
             {isEditing ? "Update" : "Save"}

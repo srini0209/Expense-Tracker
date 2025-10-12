@@ -1,10 +1,11 @@
-import connectDB from "../../../../utils/dbConnect.js";
+import connectDB from "../../../utils/dbConnect.js";
 import TransactionsModel from "../../../../models/TransactionsModel.js";
 import userModel from "../../../../models/UserModel.js";
 import { NextResponse } from "next/server.js";
 import jwt from "jsonwebtoken";
 import customMiddleware from "../../customMiddleware.js";
 import mongoose from "mongoose";
+import { sanitizeInput } from "../../../utils/sanitizeInput.js";
 
 export async function GET(request, { params }) {
   const authHeader = request.headers.get("authorization");
@@ -57,8 +58,8 @@ export async function GET(request, { params }) {
     const limitCount = searchParams.get("limit");
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
-    if (type) filter.txnType = type;
-    if (category) filter.category = category;
+    if (type) filter.txnType = sanitizeInput(type);
+    if (category) filter.category = sanitizeInput(category);
     filter.date = { $gte: startDate, $lte: endDate };
 
     await connectDB();
@@ -69,7 +70,8 @@ export async function GET(request, { params }) {
     console.log("api/transactions/route.js userId:", userId);
     const txns = await TransactionsModel.find(filter)
       .sort({ date: -1 })
-      .limit(limitCount ? limitCount : "").lean();
+      .limit(limitCount ? limitCount : "")
+      .lean();
 
     // const Incomepipeline = [
     //   {
@@ -209,7 +211,8 @@ export async function POST(request) {
   try {
     await connectDB();
     const body = await request.json();
-    const { txnType, amount, category, description, date } = body;
+    const cleanData = sanitizeInput(body);
+    const { txnType, amount, category, description, date } = cleanData;
 
     const txn = await TransactionsModel.create({
       userId: userId,

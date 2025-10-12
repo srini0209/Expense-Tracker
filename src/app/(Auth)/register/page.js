@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Form from "next/form";
 import LoginSigupTab from "../../components/LoginSigupTab.js";
-import { validateEmail } from "../../../../utils/helper.js";
+import { validateEmail } from "../../../utils/helper.js";
 import Input from "../../components/Inputs/Input.js";
 import axiosInstance from "../../axiosInstance.js";
 import { useRouter } from "next/navigation.js";

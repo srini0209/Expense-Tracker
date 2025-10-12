@@ -11,7 +11,7 @@ import {
 import TransactionsModel from "../../../../models/TransactionsModel";
 import CategoriesModel from "../../../../models/CategoriesModel.js";
 import { authenticate } from "./auth.js";
-import connectDB from "../../../../utils/dbConnect";
+import connectDB from "../../../utils/dbConnect";
 
 
 // sessions: sessionId -> { transport, server, userId }

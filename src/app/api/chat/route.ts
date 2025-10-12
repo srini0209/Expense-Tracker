@@ -15,6 +15,14 @@ export async function POST(req: Request) {
         baseURL: "https://api.perplexity.ai",
       },
     });
+    // const llm = new ChatOpenAI({
+    //   model: "sarvam-m",
+    //   temperature: 0.7,
+    //   apiKey: process.env.SARVAM_API_KEY,
+    //   configuration: {
+    //     baseURL: "https://api.sarvam.ai/v1",
+    //   },
+    // });
     console.log("LLM initialized");  // Confirm setup
 
     const prompt = ChatPromptTemplate.fromMessages([
@@ -27,7 +35,7 @@ export async function POST(req: Request) {
         - View Categories: Main Menu > Categories (In this the user can add/edit/delete categories, set budgets, view category wise spendings)\
         based on the above instructions, guide the users to use the application.\
         Answer only whatever question you receive in concise, easy to understandable way. \
-        Reply 'I am a expense tracker assistant, I am not familiar with that.' if you receive questions not relevant to the above instructions. \
+        Reply 'I am an expense tracker assistant, I am not familiar with that.' if you receive questions not relevant to the above instructions. \
         Strictly follow the above instructions and do not answer any general questions which is not relevant to the expense tracker application"
         ],
       ["human", "{input}"],
@@ -42,7 +50,7 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("API error:", error);  // Log any errors
+    console.error("API error:", error.message);  // Log any errors
     return  NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
