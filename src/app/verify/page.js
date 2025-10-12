@@ -1,12 +1,10 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import axiosInstance from "../axiosInstance";
 import { useRouter } from "next/navigation";
 
-export default function VerifyPage() {
+export default function Page() {
   const [message, setMessage] = useState("Verifying...");
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const verify = async (token) => {
@@ -24,18 +22,21 @@ export default function VerifyPage() {
     }
   };
   useEffect(() => {
-    const token = searchParams.get("token");
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
     if (!token) return setMessage("Invalid verification link");
     verify(token);
     // fetch(`/api/auth/verify?token=${token}`)
     //   .then((res) => res.json())
     //   .then((data) => setMessage(data.message || data.error))
     //   .catch(() => setMessage("Something went wrong"));
-  }, [searchParams]);
+  }, []);
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <h2 className="text-xl font-bold">{message}</h2>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="flex h-screen items-center justify-center">
+        <h2 className="text-xl font-bold">{message}</h2>
+      </div>
+    </Suspense>
   );
 }

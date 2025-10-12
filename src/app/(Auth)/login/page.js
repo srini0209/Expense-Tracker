@@ -94,7 +94,7 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <div class="flex justify-end w-full">
+          <div className="flex justify-end w-full">
             <Link href="/forgot-password" className="text-indigo-500 text-sm font-normal leading-normal text-start underline">
               Forgot Password?
             </Link>
@@ -112,7 +112,7 @@ const Login = () => {
         </button>
       </Form>
       <Link href="/register" className="text-indigo-500 text-sm font-normal leading-normal  mt-3 text-start underline">
-        Don't have an account? Sign up</Link>
+        Don&apos;t have an account? Sign up</Link>
       {loading &&
        <div className="flex justify-center items-center h-screen w-screen fixed inset-0 z-100">
         <CircularProgress size="lg" variant="soft" color="neutral" value={60} />
