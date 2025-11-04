@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../utils/dbConnect.js";
 import TransactionsModel from "../../../../../models/TransactionsModel.js";
+import { sanitizeInput } from "../../../../utils/sanitizeInput.js";
 import mongoose from "mongoose";
 
 export async function GET(request, { params }) {
@@ -43,7 +44,7 @@ export async function PUT(request, { params }) {
     return NextResponse.json({
       message: "Error updating Transaction",
       error: error.message,
-    });
+    },{status:400});
   }
 }
 

@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     const chain = prompt.pipe(llm);
     const response = await chain.invoke({ input: message });
-    console.log("LLM response:", response.content);  // Log output
+    // console.log("LLM response:", response.content);  // Log output
 
     return NextResponse.json({ response: response.content }, {
       status: 200,

@@ -167,8 +167,8 @@ export default function ChatPage() {
       {/* Header */}
       <div className="bg-white border-b border-border-light px-4 py-3 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-800">AI Assistant</h1>
-          <p className="text-sm text-gray-500">Powered by Perplexity AI</p>
+          <h1 className="text-xl font-semibold text-gray-800">Expense Tracker Assistant</h1>
+          {<p className="text-xs text-gray-500">Powered by AI</p>}
         </div>
         {messages.length > 0 && (
           <button
@@ -189,9 +189,9 @@ export default function ChatPage() {
               <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Bot size={32} className="text-gray-500" />
               </div>
-              <h2 className="text-xl font-medium text-gray-700 mb-2">Welcome to AI Chat</h2>
-              <p className="text-gray-500 max-w-md mx-auto">
-                Start a conversation with our AI assistant. Ask questions, get help with tasks, or just chat!
+              <h2 className="text-xl font-medium text-gray-700 mb-2">Welcome to Expense Tracker Assistant</h2>
+              <p className="text-gray-500 text-xs max-w-md mx-auto">
+                Start a conversation with our AI assistant. Ask questions, get help on how to use this app!
               </p>
             </div>
           ) : (

@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
   const fetchUser = async () => {
     try {
       const res = await axiosInstance.get("/api/auth/user");
-      console.log("userContext fetchUser res.data:", res.data);
+      // console.log("userContext fetchUser res.data:", res.data);
       setUser(res.data && res.data.user);
     } catch (error) {
       console.error("User not found", error.message);
@@ -28,7 +28,7 @@ export const UserProvider = ({ children }) => {
   const fetchCategories = async () => {
     try {
       const res = await axiosInstance.get("/api/categories");
-      console.log("userContext fetchCategories res.data:", res.data);
+      // console.log("userContext fetchCategories res.data:", res.data);
       setUserCategories(res.data && res.data);
     } catch (error) {
       console.error("User not found", error.message);
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("token");
-    console.log('Context useEffect accessToken', accessToken)
+    // console.log('Context useEffect accessToken', accessToken)
     if (!accessToken) {
       setUserLoading(false);
       return;
